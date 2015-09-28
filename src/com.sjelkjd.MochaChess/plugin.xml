@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="com.sjelkjd.MochaChess"
+    version="1.0.0">
+
+    <!-- windows -->
+    <platform name="windows">
+	<js-module src="www/MochaChess.js" name="MochaChess">
+        	<merges target="window" />
+	</js-module>
+
+        <js-module src="src/windows/MochaChessProxy.js" name="MochaChessProxy">
+            <runs />
+        </js-module>
+        <reference src="src/windows/MochaChessPluginWindows81/MochaChessPluginWindows81.vcxproj"/>
+
+    </platform>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Echo">
+                <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
+            </feature>
+        </config-file>
+    </platform>
+
+    <!-- ios -->
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="MochaChess">
+                <param name="ios-package" value="MochaChess_Cordova" />
+                <param name="onload" value="true"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/ios/Board.cpp" target-dir="." />
+        <header-file src="src/ios/Board.h" target-dir="." />
+        <source-file src="src/ios/EndgameTable.cpp" target-dir="." />
+        <header-file src="src/ios/EndgameTable.h" target-dir="." />
+        <source-file src="src/ios/Evaluation.cpp" target-dir="." />
+        <header-file src="src/ios/Evaluation.h" target-dir="." />
+        <source-file src="src/ios/MoveGenerator.cpp" target-dir="." />
+        <header-file src="src/ios/MoveGenerator.h" target-dir="." />
+        <source-file src="src/ios/Search.cpp" target-dir="." />
+        <header-file src="src/ios/Search.h" target-dir="." />
+        <source-file src="src/ios/StaticExchangeEvaluator.cpp" target-dir="." />
+        <header-file src="src/ios/StaticExchangeEvalautor.h" target-dir="." />
+        <source-file src="src/ios/TranspositionTable.cpp" target-dir="." />
+        <header-file src="src/ios/TranspositionTable.h" target-dir="." />
+        <source-file src="src/ios/Types.cpp" target-dir="." />
+        <header-file src="src/ios/Types.h" target-dir="." />
+        <header-file src="src/ios/HashTable.h" target-dir="." />
+        <source-file src="src/ios/native.cpp" target-dir="." />
+        <header-file src="src/ios/native.h" target-dir="." />
+
+        <header-file src="src/ios/MochaChessCordova.h" target-dir="." />
+        <source-file src="src/ios/MochaChessCordova.m" target-dir="." />
+
+    </platform>
+
+</plugin>

@@ -1,0 +1,26 @@
+﻿body {
+}
+
+.boardContainer{
+	position: relative;
+	width: 50%;		
+}
+.boardContainer:before{
+	content: "";
+	display: block;
+	padding-top: 100%; 	
+}
+
+.board{	
+	display: inline;
+	position:  absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;		
+	background-color: #D18B47;
+}
+
+.darkSquare {
+	background-color: #FFCE9E;
+}
