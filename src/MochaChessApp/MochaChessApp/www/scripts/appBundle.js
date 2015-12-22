@@ -3,37 +3,16 @@ var Piece = (function () {
     }
     return Piece;
 })();
-var ChessEngine = (function () {
-    function ChessEngine() {
-    }
-    ChessEngine.prototype.isValidMove = function (sr, sc, er, ec) {
-        return true;
-    };
-    ChessEngine.prototype.makeMove = function (sr, sc, er, ec) {
-    };
-    ChessEngine.prototype.makeBestMove = function () {
-    };
-    ChessEngine.prototype.isValidMoveStart = function (sr, sc) {
-        return true;
-    };
-    ChessEngine.prototype.initializeBoard = function () {
-    };
-    ChessEngine.prototype.getPiece = function (r, c) {
-        return "lightKing";
-    };
-    return ChessEngine;
-})();
-;
 // For an introduction to the Blank template, see the following documentation:
 // http://go.microsoft.com/fwlink/?LinkID=397705
 // To debug code on page load in Ripple or on Android devices/emulators: launch your app, set breakpoints, 
 // and then run "window.location.reload()" in the JavaScript Console.
+/// <reference path="../plugins/com.sjelkjd.MochaChess/www/MochaChess.d.ts" />
 var MochaChessApp;
 (function (MochaChessApp) {
     "use strict";
     var Application;
     (function (Application) {
-        Application.engine = new ChessEngine();
         Application.pieces = [];
         Application.playerMoving = false;
         Application.computerMoving = false;
@@ -45,6 +24,23 @@ var MochaChessApp;
             document.addEventListener('deviceready', onDeviceReady, false);
         }
         Application.initialize = initialize;
+        function getPieceName(piece) {
+            switch (piece) {
+                case "r": return "darkRook";
+                case "R": return "lightRook";
+                case "n": return "darkKnight";
+                case "N": return "lightKnight";
+                case "b": return "darkBishop";
+                case "B": return "lightBishop";
+                case "k": return "darkKing";
+                case "K": return "lightKing";
+                case "q": return "darkQueen";
+                case "Q": return "lightQueen";
+                case "p": return "darkPawn";
+                case "P": return "lightPawn";
+                default: return "";
+            }
+        }
         function onDeviceReady() {
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
@@ -66,6 +62,7 @@ var MochaChessApp;
                     document.getElementById('board').appendChild(square);
                 }
             }
+            Application.engine = window.chess;
             initializeBoard();
             document.body.onmousedown = onMouseDown;
             document.body.onmousemove = onMouseMove;
@@ -96,34 +93,47 @@ var MochaChessApp;
             var rect = board.getBoundingClientRect();
             var xx = x - board.clientLeft;
             var yy = y - board.clientTop;
-            var r = Math.ceil((yy / rect.height) * 8) - 1;
+            var r = 7 - (Math.ceil((yy / rect.height) * 8) - 1);
             var c = Math.ceil((xx / rect.width) * 8) - 1;
             if (0 <= r && r <= 7 && 0 <= c && c <= 7) {
                 if (Application.playerMoving) {
-                    if (engine.isValidMove(Application.startR, Application.startC, r, c)) {
-                        engine.makeMove(Application.startR, Application.startC, r, c);
-                        updateBoard();
-                        Application.playerMoving = false;
-                        Application.computerMoving = true;
-                        engine.makeBestMove();
-                        updateBoard();
-                        Application.computerMoving = false;
-                    }
-                    else {
-                        // cancel
-                        Application.playerMoving = false;
-                        var piece = Application.pieces[Application.startR][Application.startC];
-                        piece.style.removeProperty("margin");
-                    }
+                    var move = {
+                        startRow: Application.startR, startCol: Application.startC, endRow: r, endCol: c
+                    };
+                    engine.isValidMove(function (result) {
+                        if (result) {
+                            engine.makeMove(function () {
+                                updateBoard();
+                                Application.playerMoving = false;
+                                Application.computerMoving = true;
+                                setTimeout(function () {
+                                    engine.makeBestMove(function () {
+                                        updateBoard();
+                                        Application.computerMoving = false;
+                                    }, function () { });
+                                }, 0);
+                            }, function () { }, move);
+                        }
+                        else {
+                            // cancel
+                            Application.playerMoving = false;
+                            var piece = Application.pieces[Application.startR][Application.startC];
+                            piece.style.removeProperty("margin");
+                        }
+                    }, function () { }, move);
                 }
                 else {
-                    if (engine.isValidMoveStart(r, c)) {
-                        Application.playerMoving = true;
-                        Application.startR = r;
-                        Application.startC = c;
-                        Application.startX = x;
-                        Application.startY = y;
-                    }
+                    var square = { row: r, col: c };
+                    if (engine.isValidMoveStart(function (result) {
+                        if (result) {
+                            Application.playerMoving = true;
+                            Application.startR = r;
+                            Application.startC = c;
+                            Application.startX = x;
+                            Application.startY = y;
+                        }
+                    }, function () { }, square))
+                        ;
                 }
             }
         }
@@ -131,10 +141,10 @@ var MochaChessApp;
             var engine = Application.engine;
             var pieces = Application.pieces;
             var board = document.querySelector('#board');
-            var piece = document.querySelector('#' + pieceName).cloneNode(true);
+            var piece = document.querySelector('#' + getPieceName(pieceName)).cloneNode(true);
             piece.style.visibility = 'visible';
             var x = .125 * col * 100;
-            var y = .125 * row * 100;
+            var y = .125 * (7 - row) * 100;
             piece.style.position = 'absolute';
             piece.style.left = x + "%";
             piece.style.top = y + "%";
@@ -153,15 +163,17 @@ var MochaChessApp;
         }
         function initializeBoard() {
             var engine = Application.engine;
-            engine.initializeBoard();
+            engine.initializeBoard(function () { }, function () { });
             var r = 0;
             var c = 0;
             for (r = 0; r < 8; r++) {
                 for (c = 0; c < 8; c++) {
-                    var piece = engine.getPiece(r, c);
-                    if (piece != '') {
-                        addPiece(piece, r, c);
-                    }
+                    var square = { row: r, col: c };
+                    var piece = engine.getPiece(function (piece) {
+                        if (piece != '') {
+                            addPiece(piece, r, c);
+                        }
+                    }, function () { }, square);
                 }
             }
         }
@@ -172,22 +184,24 @@ var MochaChessApp;
             var c = 0;
             for (r = 0; r < 8; r++) {
                 for (c = 0; c < 8; c++) {
-                    var newPiece = engine.getPiece(r, c);
-                    var oldPiece = pieces[r][c];
-                    if (newPiece != '') {
-                        if (oldPiece != null && oldPiece.id != newPiece) {
-                            removePiece(r, c);
-                            addPiece(newPiece, r, c);
+                    var square = { row: r, col: c };
+                    engine.getPiece(function (newPiece) {
+                        var oldPiece = pieces[r][c];
+                        if (newPiece != '') {
+                            if (oldPiece != null && oldPiece.id != newPiece) {
+                                removePiece(r, c);
+                                addPiece(newPiece, r, c);
+                            }
+                            else if (oldPiece == null) {
+                                addPiece(newPiece, r, c);
+                            }
                         }
-                        else if (oldPiece == null) {
-                            addPiece(newPiece, r, c);
+                        else {
+                            if (oldPiece != null) {
+                                removePiece(r, c);
+                            }
                         }
-                    }
-                    else {
-                        if (oldPiece != null) {
-                            removePiece(r, c);
-                        }
-                    }
+                    }, function () { }, square);
                 }
             }
         }

@@ -1,0 +1,18 @@
+{
+    "version": "1.0.0",
+    "name": "com.sjelkjd.MochaChess",
+    "cordova_name": "MochaChess",
+    "description": "MochaChess Plugin",
+    "license": "Apache 2.0",
+    "repo": "NYI",
+    "issue": "NYI",
+    "keywords": [
+        "cordova",
+        "chess"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "engines": [],
+    "englishdoc": ""
+}
