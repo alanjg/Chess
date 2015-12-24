@@ -48,24 +48,33 @@ var MochaChessApp;
             for (var i = 0; i < 8; i++) {
                 Application.pieces[i] = [];
                 for (var j = 0; j < 8; j++) {
+                    Application.pieces[i][j] = null;
                     var square = document.createElement('div');
                     var x = .125 * j * 100;
                     var y = .125 * i * 100;
                     square.style.position = 'absolute';
+               // square.classList.add('row' + i);
+               // square.classList.add('col' + j);
                     square.style.left = x + "%";
                     square.style.top = y + "%";
                     square.style.width = "12.5%";
                     square.style.height = "12.5%";
                     if (((i + j) % 2) == 0) {
-                        square.className = 'darkSquare';
+                       // square.classList.add('darkSquare');
+                       square.className = 'darkSquare';
                     }
+                 //   square.classList.add('square');
                     document.getElementById('board').appendChild(square);
                 }
             }
             Application.engine = window.chess;
             initializeBoard();
+            console.log('init');
             document.body.onmousedown = onMouseDown;
             document.body.onmousemove = onMouseMove;
+     
+     document.body.ontouchstart = onMouseDown;
+     document.body.ontouchmove = onMouseMove;
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
@@ -74,6 +83,7 @@ var MochaChessApp;
             // TODO: This application has been reactivated. Restore application state here.
         }
         function onMouseMove(event) {
+            console.log('mouse move');
             if (Application.computerMoving)
                 return;
             if (Application.playerMoving) {
@@ -84,6 +94,7 @@ var MochaChessApp;
             }
         }
         function onMouseDown(event) {
+            console.log('mouse down');
             if (Application.computerMoving)
                 return;
             var engine = Application.engine;
@@ -138,7 +149,7 @@ var MochaChessApp;
             }
         }
         function addPiece(pieceName, row, col) {
-            var engine = Application.engine;
+         //   var engine = Application.engine;
             var pieces = Application.pieces;
             var board = document.querySelector('#board');
             var piece = document.querySelector('#' + getPieceName(pieceName)).cloneNode(true);
@@ -150,6 +161,9 @@ var MochaChessApp;
             piece.style.top = y + "%";
             piece.style.width = "12.5%";
             piece.style.height = "12.5%";
+        //    piece.classList.add('piece');
+         //   piece.classList.add('row' + (7-row));
+          //  piece.classList.add('col' + col);
             board.insertBefore(piece, null);
             pieces[row][col] = piece;
         }
@@ -161,21 +175,29 @@ var MochaChessApp;
                 pieces[row][col] = null;
             }
         }
-        function initializeBoard() {
-            var engine = Application.engine;
-            engine.initializeBoard(function () { }, function () { });
-            var r = 0;
-            var c = 0;
-            for (r = 0; r < 8; r++) {
-                for (c = 0; c < 8; c++) {
-                    var square = { row: r, col: c };
-                    var piece = engine.getPiece(function (piece) {
-                        if (piece != '') {
-                            addPiece(piece, r, c);
+        function updateCheck(r, c)
+        {
+             var square = { row: r, col: c };
+                   
+                    Application.engine.getPiece(function (p) {
+                        if (p != '') {
+                            addPiece(p, r, c);
                         }
                     }, function () { }, square);
+        }
+        function initializeBoard() {
+            var engine = Application.engine;
+            engine.initializeBoard(function () { 
+                
+            }, function () { });
+               var r = 0;
+             var c = 0;
+             for (r = 0; r < 8; r++) {
+                 for (c = 0; c < 8; c++) {
+                    updateCheck(r, c);
                 }
             }
+            
         }
         function updateBoard() {
             var engine = Application.engine;

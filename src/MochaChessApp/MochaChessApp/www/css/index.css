@@ -1,17 +1,17 @@
 ﻿body {
 }
 
-.boardContainer{
+.boardContainer {
 	position: relative;
 	width: 50%;		
 }
-.boardContainer:before{
+.boardContainer:before {
 	content: "";
 	display: block;
 	padding-top: 100%; 	
 }
 
-.board{	
+.board {	
 	display: inline;
 	position:  absolute;
 	top: 0;
@@ -21,6 +21,19 @@
 	background-color: #D18B47;
 }
 
+.square {
+    width: 12.5%;
+    height: 12.5%;
+    position: absolute;
+}
+
 .darkSquare {
 	background-color: #FFCE9E;
+}
+
+.piece {
+    width: 12.5%;
+    height: 12.5%;
+    visibility: visible;
+    position: absolute;        
 }

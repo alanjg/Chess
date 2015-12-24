@@ -137,14 +137,8 @@ namespace SjelkjdChessEngine
 		static ulong GenerateKey()
 		{
 			ulong need = std::numeric_limits<ulong>::max();
-			ulong key = 0;
-			while(need > 0)
-			{
-				key *= RAND_MAX + 1;
-				key += (ulong)rand();
-
-				need /= RAND_MAX + 1;
-			}
+			ulong key = (ulong)rand();
+			
 			return key;
 		}
 		static const ulong ENTRY_SET_MASK = 1ULL << 63;

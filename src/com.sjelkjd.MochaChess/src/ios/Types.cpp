@@ -4,6 +4,10 @@
 namespace SjelkjdChessEngine
 {
 
+    const int PieceTypes::Rook;
+    const int PieceTypes::None;
+    const int PieceTypes::Bishop;
+    const int Pieces::None;
 	bool CastleRights::GetKing(int color) const
 	{
 		return (value & (color == Colors::White ? 1 : 4)) != 0;
@@ -117,7 +121,7 @@ string GetUCIString(int move)
 		case PieceTypes::Knight: promo = 'n'; break;
 		case PieceTypes::Queen: promo = 'q'; break;
 		case PieceTypes::Rook: promo = 'r'; break;
-			default: throw new exception("Invalid promotion choice."); break;
+			default: break;
 		}
 		moveStr << promo;
 	}

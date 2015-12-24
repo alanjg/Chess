@@ -727,7 +727,7 @@ namespace SjelkjdChessEngine
 
 	void Search::SortMoves(vector<int>& moves, int firstMove, int killer1, int killer2, vector<int>& moveValueList)
 	{
-		static vector<pair<int, int>> moveList;
+		static vector<pair<int, int> > moveList;
 		moveList.clear();
 		
 		for (uint i = 0; i < moves.size(); i++)
