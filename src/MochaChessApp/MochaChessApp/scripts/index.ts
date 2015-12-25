@@ -8,13 +8,15 @@ module MochaChessApp {
 
     export module Application {
         export var engine: ChessEngine;
-		export var pieces = []; 
+        export var pieces = [];
+        export var squares: HTMLElement[][] = [];
 		export var playerMoving: boolean = false;
 		export var computerMoving: boolean = false;
 		export var startR: number = 0;
 		export var startC: number = 0;
 		export var startX: number = 0;
-		export var startY: number = 0;
+        export var startY: number = 0;
+
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
         }
@@ -49,20 +51,20 @@ module MochaChessApp {
 
             for (var i = 0; i < 8; i++) {
                 Application.pieces[i] = [];
+                Application.squares[i] = [];
                 for (var j = 0; j < 8; j++) {
                     var square = document.createElement('div');
                     var x = .125 * j * 100;
-                    var y = .125 * i * 100;
-                    square.style.position = 'absolute';
+                    var y = .125 * (7-i) * 100;
                     square.style.left = x + "%";
                     square.style.top = y + "%";
-                    square.style.width = "12.5%";
-                    square.style.height = "12.5%";
+                    square.classList.add('square');
 
                     if (((i + j) % 2) == 0) {
-                        square.className = 'darkSquare';
+                        square.classList.add('darkSquare');
                     }
                     document.getElementById('board').appendChild(square);
+                    squares[i][j] = square;
                 }
             }
             engine = window.chess;
@@ -81,6 +83,7 @@ module MochaChessApp {
         }
 
         function onMouseMove(event: MouseEvent) {
+            /*
             if (Application.computerMoving) return;
             if (Application.playerMoving) {
                 var piece = Application.pieces[Application.startR][Application.startC];
@@ -88,6 +91,7 @@ module MochaChessApp {
                 var T = (event.y - Application.startY).toString() + "px";
                 piece.style.margin = T + " 0 0 " + L;
             }
+            */
         }
 
         function onMouseDown(event: MouseEvent) {
@@ -109,9 +113,9 @@ module MochaChessApp {
                     var move = {
                         startRow: Application.startR, startCol: Application.startC, endRow: r, endCol: c
                     };
+                    Application.squares[Application.startR][Application.startC].classList.remove('moveSource');
                     engine.isValidMove((result: boolean) => {
                         if (result) {
-
                             engine.makeMove(() => {
                                 updateBoard();
                                 Application.playerMoving = false;
@@ -142,7 +146,7 @@ module MochaChessApp {
                             Application.startC = c;
                             Application.startX = x;
                             Application.startY = y;
-
+                            Application.squares[r][c].classList.add('moveSource');
                         }
                     }, () => { }, square));
                 }

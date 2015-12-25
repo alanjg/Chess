@@ -21,6 +21,18 @@
 	background-color: #D18B47;
 }
 
+.square {
+	width: 12.5%;
+	height: 12.5%;
+	position: absolute;
+}
+
 .darkSquare {
 	background-color: #FFCE9E;
+}
+
+.moveSource {
+	border: 2px dotted;
+	width: calc(12.5% - 4px);
+	height: calc(12.5% - 4px);
 }

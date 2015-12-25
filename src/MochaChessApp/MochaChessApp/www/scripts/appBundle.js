@@ -14,6 +14,7 @@ var MochaChessApp;
     var Application;
     (function (Application) {
         Application.pieces = [];
+        Application.squares = [];
         Application.playerMoving = false;
         Application.computerMoving = false;
         Application.startR = 0;
@@ -47,19 +48,19 @@ var MochaChessApp;
             document.addEventListener('resume', onResume, false);
             for (var i = 0; i < 8; i++) {
                 Application.pieces[i] = [];
+                Application.squares[i] = [];
                 for (var j = 0; j < 8; j++) {
                     var square = document.createElement('div');
                     var x = .125 * j * 100;
-                    var y = .125 * i * 100;
-                    square.style.position = 'absolute';
+                    var y = .125 * (7 - i) * 100;
                     square.style.left = x + "%";
                     square.style.top = y + "%";
-                    square.style.width = "12.5%";
-                    square.style.height = "12.5%";
+                    square.classList.add('square');
                     if (((i + j) % 2) == 0) {
-                        square.className = 'darkSquare';
+                        square.classList.add('darkSquare');
                     }
                     document.getElementById('board').appendChild(square);
+                    Application.squares[i][j] = square;
                 }
             }
             Application.engine = window.chess;
@@ -74,14 +75,15 @@ var MochaChessApp;
             // TODO: This application has been reactivated. Restore application state here.
         }
         function onMouseMove(event) {
-            if (Application.computerMoving)
-                return;
+            /*
+            if (Application.computerMoving) return;
             if (Application.playerMoving) {
                 var piece = Application.pieces[Application.startR][Application.startC];
                 var L = (event.x - Application.startX).toString() + "px";
                 var T = (event.y - Application.startY).toString() + "px";
                 piece.style.margin = T + " 0 0 " + L;
             }
+            */
         }
         function onMouseDown(event) {
             if (Application.computerMoving)
@@ -100,6 +102,7 @@ var MochaChessApp;
                     var move = {
                         startRow: Application.startR, startCol: Application.startC, endRow: r, endCol: c
                     };
+                    Application.squares[Application.startR][Application.startC].classList.remove('moveSource');
                     engine.isValidMove(function (result) {
                         if (result) {
                             engine.makeMove(function () {
@@ -131,6 +134,7 @@ var MochaChessApp;
                             Application.startC = c;
                             Application.startX = x;
                             Application.startY = y;
+                            Application.squares[r][c].classList.add('moveSource');
                         }
                     }, function () { }, square))
                         ;
