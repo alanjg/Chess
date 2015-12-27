@@ -43,7 +43,6 @@ var MochaChessApp;
             }
         }
         function onDeviceReady() {
-            // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
             for (var i = 0; i < 8; i++) {
@@ -146,14 +145,12 @@ var MochaChessApp;
             var pieces = Application.pieces;
             var board = document.querySelector('#board');
             var piece = document.querySelector('#' + getPieceName(pieceName)).cloneNode(true);
-            piece.style.visibility = 'visible';
             var x = .125 * col * 100;
             var y = .125 * (7 - row) * 100;
-            piece.style.position = 'absolute';
             piece.style.left = x + "%";
             piece.style.top = y + "%";
-            piece.style.width = "12.5%";
-            piece.style.height = "12.5%";
+            piece.style.visibility = "visible";
+            piece.classList.add('piece');
             board.insertBefore(piece, null);
             pieces[row][col] = piece;
         }
@@ -165,6 +162,14 @@ var MochaChessApp;
                 pieces[row][col] = null;
             }
         }
+        function setPiece(r, c) {
+            var square = { row: r, col: c };
+            Application.engine.getPiece(function (piece) {
+                if (piece != '') {
+                    addPiece(piece, r, c);
+                }
+            }, function () { }, square);
+        }
         function initializeBoard() {
             var engine = Application.engine;
             engine.initializeBoard(function () { }, function () { });
@@ -172,40 +177,36 @@ var MochaChessApp;
             var c = 0;
             for (r = 0; r < 8; r++) {
                 for (c = 0; c < 8; c++) {
-                    var square = { row: r, col: c };
-                    var piece = engine.getPiece(function (piece) {
-                        if (piece != '') {
-                            addPiece(piece, r, c);
-                        }
-                    }, function () { }, square);
+                    setPiece(r, c);
                 }
             }
         }
+        function updatePiece(r, c) {
+            var square = { row: r, col: c };
+            Application.engine.getPiece(function (newPiece) {
+                var oldPiece = Application.pieces[r][c];
+                if (newPiece != '') {
+                    if (oldPiece != null && oldPiece.id != newPiece) {
+                        removePiece(r, c);
+                        addPiece(newPiece, r, c);
+                    }
+                    else if (oldPiece == null) {
+                        addPiece(newPiece, r, c);
+                    }
+                }
+                else {
+                    if (oldPiece != null) {
+                        removePiece(r, c);
+                    }
+                }
+            }, function () { }, square);
+        }
         function updateBoard() {
-            var engine = Application.engine;
-            var pieces = Application.pieces;
             var r = 0;
             var c = 0;
             for (r = 0; r < 8; r++) {
                 for (c = 0; c < 8; c++) {
-                    var square = { row: r, col: c };
-                    engine.getPiece(function (newPiece) {
-                        var oldPiece = pieces[r][c];
-                        if (newPiece != '') {
-                            if (oldPiece != null && oldPiece.id != newPiece) {
-                                removePiece(r, c);
-                                addPiece(newPiece, r, c);
-                            }
-                            else if (oldPiece == null) {
-                                addPiece(newPiece, r, c);
-                            }
-                        }
-                        else {
-                            if (oldPiece != null) {
-                                removePiece(r, c);
-                            }
-                        }
-                    }, function () { }, square);
+                    updatePiece(r, c);
                 }
             }
         }

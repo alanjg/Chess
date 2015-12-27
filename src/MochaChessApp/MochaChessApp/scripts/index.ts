@@ -155,6 +155,7 @@ module MochaChessApp {
             var y = .125 * (7-row) * 100;
             piece.style.left = x + "%";
             piece.style.top = y + "%";
+            piece.style.visibility = "visible";
             piece.classList.add('piece');
             board.insertBefore(piece, null);
             pieces[row][col] = piece;
