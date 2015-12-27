@@ -72,20 +72,20 @@ private:
 		static int ndr[];
 		static int ndc[];
 
-		static void MoveGenerator::GenerateRankAttackBitmasks();
-		static void MoveGenerator::GenerateFileAttackBitmasks();
-		static void MoveGenerator::GenerateDiagA1H8AttackBitmasks();
-		static void MoveGenerator::GenerateDiagA8H1AttackBitmasks();
-		static void MoveGenerator::GenerateKnightAttackBitmasks();
-		static void MoveGenerator::GenerateKingAttackBitmasks();
-		static void MoveGenerator::GeneratePawnAttackBitmasks();
+		static void GenerateRankAttackBitmasks();
+		static void GenerateFileAttackBitmasks();
+		static void GenerateDiagA1H8AttackBitmasks();
+		static void GenerateDiagA8H1AttackBitmasks();
+		static void GenerateKnightAttackBitmasks();
+		static void GenerateKingAttackBitmasks();
+		static void GeneratePawnAttackBitmasks();
 		
-		static void MoveGenerator::GenerateRankPinBitmasks();
-		static void MoveGenerator::GenerateFilePinBitmasks();
-		static void MoveGenerator::GenerateDiagA1H8PinBitmasks();
-		static void MoveGenerator::GenerateDiagA8H1PinBitmasks();
-		static void MoveGenerator::GenerateDiagonalMasks();
-		static void MoveGenerator::GenerateIntermediateSquares();
+		static void GenerateRankPinBitmasks();
+		static void GenerateFilePinBitmasks();
+		static void GenerateDiagA1H8PinBitmasks();
+		static void GenerateDiagA8H1PinBitmasks();
+		static void GenerateDiagonalMasks();
+		static void GenerateIntermediateSquares();
 
 		void AddMoves(int pieceType, int colr, ulong targets, std::vector<int>& currentMoves);
 		void AddPawnMoves(bool queiscentMovesOnly, int toMove, ulong captureTargets, ulong moveTargets, std::vector<int>& currentMoves);

@@ -10,7 +10,7 @@
     "com.sjelkjd.MochaChess": {
         "source": {
             "type": "local",
-            "path": "C:\\Users\\alanga\\Documents\\GitHub\\Chess\\src\\com.sjelkjd.MochaChess"
+            "path": "../../com.sjelkjd.MochaChess"
         },
         "is_top_level": true,
         "variables": {}

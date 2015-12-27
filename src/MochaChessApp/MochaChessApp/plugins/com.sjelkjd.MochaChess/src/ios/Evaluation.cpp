@@ -6,7 +6,6 @@
 #include "TranspositionTable.h"
 
 using namespace std;
-using namespace stdext;
 namespace SjelkjdChessEngine
 {
 	int Evaluation::pieceValues[] = { 100, 300, 300, 500, 900, 50000, -100, -300, -300, -500, -900, -50000, 0 };

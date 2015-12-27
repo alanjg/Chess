@@ -5,9 +5,9 @@
 
     <!-- windows -->
     <platform name="windows">
-	<js-module src="www/MochaChess.js" name="MochaChess">
-        	<merges target="chess" />
-	</js-module>
+	   <js-module src="www/MochaChess.js" name="MochaChess">
+          	<merges target="chess" />
+	   </js-module>
 
         <js-module src="src/windows/MochaChessProxy.js" name="MochaChessProxy">
             <runs />
@@ -30,11 +30,13 @@
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="MochaChess">
-                <param name="ios-package" value="MochaChess_Cordova" />
+                <param name="ios-package" value="MochaChessEngine" />
                 <param name="onload" value="true"/>
             </feature>
         </config-file>
-
+        <js-module src="www/MochaChess.js" name="MochaChess">
+        	<merges target="chess" />
+	   </js-module>
         <source-file src="src/ios/Board.cpp" target-dir="." />
         <header-file src="src/ios/Board.h" target-dir="." />
         <source-file src="src/ios/EndgameTable.cpp" target-dir="." />
@@ -46,17 +48,15 @@
         <source-file src="src/ios/Search.cpp" target-dir="." />
         <header-file src="src/ios/Search.h" target-dir="." />
         <source-file src="src/ios/StaticExchangeEvaluator.cpp" target-dir="." />
-        <header-file src="src/ios/StaticExchangeEvalautor.h" target-dir="." />
+        <header-file src="src/ios/StaticExchangeEvaluator.h" target-dir="." />
         <source-file src="src/ios/TranspositionTable.cpp" target-dir="." />
         <header-file src="src/ios/TranspositionTable.h" target-dir="." />
         <source-file src="src/ios/Types.cpp" target-dir="." />
         <header-file src="src/ios/Types.h" target-dir="." />
+        <header-file src="src/ios/pch.h" target-dir="." />
         <header-file src="src/ios/HashTable.h" target-dir="." />
-        <source-file src="src/ios/native.cpp" target-dir="." />
-        <header-file src="src/ios/native.h" target-dir="." />
-
         <header-file src="src/ios/MochaChessCordova.h" target-dir="." />
-        <source-file src="src/ios/MochaChessCordova.m" target-dir="." />
+        <source-file src="src/ios/MochaChessCordova.mm" target-dir="." />
 
     </platform>
 

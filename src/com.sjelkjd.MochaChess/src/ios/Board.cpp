@@ -3,7 +3,7 @@
 #include "MoveGenerator.h"
 #include "TranspositionTable.h"
 #include "Evaluation.h"
-#include <intrin.h>
+#include <immintrin.h>
 
 namespace SjelkjdChessEngine
 {
@@ -913,21 +913,15 @@ namespace SjelkjdChessEngine
 	int GetLowestSetBit(ulong mask)
 	{
 		unsigned long index;
-#if X64
-		_BitScanForward64(&index, mask);
-#else
-		unsigned char isNonZero;
-		unsigned int lower = (unsigned int)mask;
-		isNonZero = _BitScanForward(&index, lower);
-		if(!isNonZero)
-		{
-			unsigned int upper = mask >> 32;
-			_BitScanForward(&index, upper);
-			index += 32;
-		}
-#endif
-		return index;
-	}
+        for(int i=0;i<64;i++)
+        {
+                if((mask & (1ULL << i)) != 0)
+                {
+                    return i;
+                }
+        }
+        return 0;
+    }
 
 	int BitCount(ulong mask)
 	{

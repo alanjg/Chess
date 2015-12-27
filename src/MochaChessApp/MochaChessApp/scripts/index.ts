@@ -10,12 +10,12 @@ module MochaChessApp {
         export var engine: ChessEngine;
         export var pieces = [];
         export var squares: HTMLElement[][] = [];
-		export var playerMoving: boolean = false;
-		export var computerMoving: boolean = false;
-		export var startR: number = 0;
-		export var startC: number = 0;
-		export var startX: number = 0;
-        export var startY: number = 0;
+	export var playerMoving: boolean = false;
+	export var computerMoving: boolean = false;
+	export var startR: number = 0;
+	export var startC: number = 0;
+	export var startX: number = 0;
+	export var startY: number = 0;
 
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
@@ -25,19 +25,14 @@ module MochaChessApp {
             switch (piece) {
                 case "r": return "darkRook";
                 case "R": return "lightRook";
-
                 case "n": return "darkKnight";
                 case "N": return "lightKnight";
-
                 case "b": return "darkBishop";
                 case "B": return "lightBishop";
-
                 case "k": return "darkKing";
                 case "K": return "lightKing";
-
                 case "q": return "darkQueen";
                 case "Q": return "lightQueen";
-
                 case "p": return "darkPawn";
                 case "P": return "lightPawn";
                 default: return "";
@@ -45,7 +40,6 @@ module MochaChessApp {
         }
 
         function onDeviceReady() {
-            // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
 
@@ -59,7 +53,6 @@ module MochaChessApp {
                     square.style.left = x + "%";
                     square.style.top = y + "%";
                     square.classList.add('square');
-
                     if (((i + j) % 2) == 0) {
                         square.classList.add('darkSquare');
                     }
@@ -158,14 +151,11 @@ module MochaChessApp {
             var pieces = Application.pieces;
             var board = document.querySelector('#board');
             var piece: HTMLElement = <HTMLElement>document.querySelector('#' + getPieceName(pieceName)).cloneNode(true);
-            piece.style.visibility = 'visible';
-			var x = .125 * col * 100;
+            var x = .125 * col * 100;
             var y = .125 * (7-row) * 100;
-            piece.style.position = 'absolute';
             piece.style.left = x + "%";
             piece.style.top = y + "%";
-            piece.style.width = "12.5%";
-            piece.style.height = "12.5%";
+            piece.classList.add('piece');
             board.insertBefore(piece, null);
             pieces[row][col] = piece;
         }
@@ -179,6 +169,15 @@ module MochaChessApp {
             }
         }
 
+        function setPiece(r, c) {
+            var square = { row: r, col: c };
+            engine.getPiece((piece: string) => {
+                if (piece != '') {
+                    addPiece(piece, r, c);
+                }
+            }, () => { }, square);
+        }
+        
         function initializeBoard() {
             var engine = Application.engine;
             engine.initializeBoard(() => { }, () => { });
@@ -186,27 +185,15 @@ module MochaChessApp {
             var c = 0;
             for (r = 0; r < 8; r++) {
                 for (c = 0; c < 8; c++) {
-                    var square = { row: r, col: c };
-                    var piece = engine.getPiece((piece: string) => {
-                        if (piece != '') {
-                            addPiece(piece, r, c);
-                        }
-                    }, () => { }, square);
+                    setPiece(r, c);
                 }
             }
         }
 
-        function updateBoard() {
-            var engine = Application.engine;
-            var pieces = Application.pieces;
-
-            var r = 0;
-            var c = 0;
-            for (r = 0; r < 8; r++) {
-                for (c = 0; c < 8; c++) {
-                    var square = { row: r, col: c };
-                    engine.getPiece((newPiece: string) => {
-                        var oldPiece = pieces[r][c];
+        function updatePiece(r,  c) {
+            var square = { row: r, col: c };
+                    Application.engine.getPiece((newPiece: string) => {
+                        var oldPiece = Application.pieces[r][c];
                         if (newPiece != '') {
                             if (oldPiece != null && oldPiece.id != newPiece) {
                                 removePiece(r, c);
@@ -222,6 +209,14 @@ module MochaChessApp {
                             }
                         }
                     }, () => { }, square);
+        }
+        
+        function updateBoard() {
+            var r = 0;
+            var c = 0;
+            for (r = 0; r < 8; r++) {
+                for (c = 0; c < 8; c++) {
+                    updatePiece(r, c);
                 }
             }
         }
