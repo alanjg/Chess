@@ -61,12 +61,14 @@ std::auto_ptr<SjelkjdChessEngine::MoveGenerator> moveGenerator;
 
 - (void)makeBestMove:(CDVInvokedUrlCommand*)command
 {
-    int move = search->GetBestMove(1.0);
-    board->MakeMove(move, true);
+    [self.commandDelegate runInBackground:^{
+        int move = search->GetBestMove(1.0);
+        board->MakeMove(move, true);
     
-    CDVPluginResult* pluginResult = nil;
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        CDVPluginResult* pluginResult = nil;
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
 }
 
 - (void)makeMove:(CDVInvokedUrlCommand*)command

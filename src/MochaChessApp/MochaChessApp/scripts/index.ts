@@ -67,6 +67,7 @@ module MochaChessApp {
             board.onmousedown = onMouseDown;
             board.onmousemove = onMouseMove;
             board.ontouchstart = onTouchStart;
+            document.addEventListener('touchmove', function(e) { e.preventDefault();}, false);
         }
 
         function onPause() {
@@ -211,7 +212,7 @@ module MochaChessApp {
                     Application.engine.getPiece((newPiece: string) => {
                         var oldPiece = Application.pieces[r][c];
                         if (newPiece != '') {
-                            if (oldPiece != null && oldPiece.id != newPiece) {
+                            if (oldPiece != null && oldPiece.id != getPieceName(newPiece)) {
                                 removePiece(r, c);
                                 addPiece(newPiece, r, c);
                             }
