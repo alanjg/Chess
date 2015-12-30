@@ -27,7 +27,7 @@ public class MochaChessCordova extends CordovaPlugin
     /* Load the native library. */
     static
     {
-        System.loadLibrary("sjelkjd");
+        System.loadLibrary("mochaChessNative");
     }
 
 
@@ -71,7 +71,7 @@ public class MochaChessCordova extends CordovaPlugin
         {
      	    int sr = data.getInt(0);
             int sc = data.getInt(1);
-		int er = data.getInt(2);
+			int er = data.getInt(2);
             int ec = data.getInt(3);
 
             return true;
