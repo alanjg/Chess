@@ -10,12 +10,13 @@ module MochaChessApp {
         export var engine: ChessEngine;
         export var pieces = [];
         export var squares: HTMLElement[][] = [];
-	export var playerMoving: boolean = false;
-	export var computerMoving: boolean = false;
-	export var startR: number = 0;
-	export var startC: number = 0;
-	export var startX: number = 0;
-	export var startY: number = 0;
+	    export var playerMoving: boolean = false;
+    	export var computerMoving: boolean = false;
+	    export var startR: number = 0;
+    	export var startC: number = 0;
+	    export var startX: number = 0;
+        export var startY: number = 0;
+        export var hasTouch: boolean = false;
 
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
@@ -42,6 +43,7 @@ module MochaChessApp {
         function onDeviceReady() {
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
+            var board = document.getElementById('board');
 
             for (var i = 0; i < 8; i++) {
                 Application.pieces[i] = [];
@@ -56,15 +58,15 @@ module MochaChessApp {
                     if (((i + j) % 2) == 0) {
                         square.classList.add('darkSquare');
                     }
-                    document.getElementById('board').appendChild(square);
+                    board.appendChild(square);
                     squares[i][j] = square;
                 }
             }
             engine = window.chess;
             initializeBoard();
-            document.body.onmousedown = onMouseDown;
-            document.body.onmousemove = onMouseMove;
-
+            board.onmousedown = onMouseDown;
+            board.onmousemove = onMouseMove;
+            board.ontouchstart = onTouchStart;
         }
 
         function onPause() {
@@ -88,16 +90,29 @@ module MochaChessApp {
         }
 
         function onMouseDown(event: MouseEvent) {
+            if (!Application.hasTouch) {
+
+                var board = document.querySelector('#board');
+                processMove(event.x, event.y);
+            }
+        }
+
+        function onTouchStart(event: TouchEvent) {
+            Application.hasTouch = true;
+            for (var i = 0; i < event.targetTouches.length; i++) {
+                processMove(event.targetTouches[i].clientX, event.targetTouches[i].clientY);
+            }
+        }
+
+        function processMove(x, y) {
             if (Application.computerMoving) return;
 
             var engine = Application.engine;
             var board = document.querySelector('#board');
-            var x = event.x;
-            var y = event.y;
             var rect = board.getBoundingClientRect();
 
-            var xx = x - board.clientLeft;
-            var yy = y - board.clientTop;
+            var xx = x - rect.left;
+            var yy = y - rect.top;
             var r = 7 - (Math.ceil((yy / rect.height) * 8) - 1);
 			var c = Math.ceil((xx / rect.width) * 8) - 1;
             
