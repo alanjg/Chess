@@ -18,8 +18,9 @@ namespace SjelkjdChessEngine
 		vector<int> moves;
 		moveGenerator->GenerateAllMoves(moves);
 		int foundMove = NullMove;
-		for each(int move in moves)
+		for (int i = 0; i < moves.size();i++)
 		{
+			int move = moves[i];
 			int source = GetSourceFromMove(move);
 			int dest = GetDestFromMove(move);
 			if (sr == GetRow(source) && sc == GetCol(source) && er == GetRow(dest) && ec == GetCol(dest))
@@ -34,32 +35,32 @@ namespace SjelkjdChessEngine
 		}
 	}
 
-	Platform::String^ ChessEngine::GetPiece(int row, int col)
+	std::string ChessEngine::GetPiece(int row, int col)
 	{
 		int piece = board->GetPiece(Square(row, col));
-		std::wstring p;
+		std::string p;
 		switch (piece)
 		{
-		case Pieces::BlackBishop: p = L"b"; break;
-		case Pieces::BlackKing: p = L"k"; break;
-		case Pieces::BlackKnight: p = L"n"; break;
-		case Pieces::BlackPawn: p = L"p"; break;
-		case Pieces::BlackQueen: p = L"q"; break;
-		case Pieces::BlackRook: p = L"r"; break;
-		case Pieces::None: p = L""; break;
-		case Pieces::WhiteBishop: p = L"B"; break;
-		case Pieces::WhiteKing: p = L"K"; break;
-		case Pieces::WhiteKnight: p = L"N"; break;
-		case Pieces::WhitePawn: p = L"P"; break;
-		case Pieces::WhiteQueen: p = L"Q"; break;
-		case Pieces::WhiteRook: p = L"R"; break;
+		case Pieces::BlackBishop: p = "b"; break;
+		case Pieces::BlackKing: p = "k"; break;
+		case Pieces::BlackKnight: p = "n"; break;
+		case Pieces::BlackPawn: p = "p"; break;
+		case Pieces::BlackQueen: p = "q"; break;
+		case Pieces::BlackRook: p = "r"; break;
+		case Pieces::None: p = ""; break;
+		case Pieces::WhiteBishop: p = "B"; break;
+		case Pieces::WhiteKing: p = "K"; break;
+		case Pieces::WhiteKnight: p = "N"; break;
+		case Pieces::WhitePawn: p = "P"; break;
+		case Pieces::WhiteQueen: p = "Q"; break;
+		case Pieces::WhiteRook: p = "R"; break;
 		}
-		return ref new Platform::String(p.c_str());
+		return p;
 	}
 
 	void ChessEngine::MakeComputerMove()
 	{
-		int move = search->GetBestMove(6.0);
+		int move = search->GetBestMove(1.0);
 		board->MakeMove(move, true);
 	}
 
@@ -67,8 +68,9 @@ namespace SjelkjdChessEngine
 	{
 		vector<int> moves;
 		moveGenerator->GenerateAllMoves(moves);
-		for each(int move in moves)
+		for (int i = 0; i < moves.size(); i++)
 		{
+			int move = moves[i];
 			int source = GetSourceFromMove(move);
 			int dest = GetDestFromMove(move);
 			if (row == GetRow(source) && col == GetCol(source))
@@ -83,8 +85,9 @@ namespace SjelkjdChessEngine
 	{
 		vector<int> moves;
 		moveGenerator->GenerateAllMoves(moves);
-		for each(int move in moves)
+		for (int i = 0; i < moves.size(); i++)
 		{
+			int move = moves[i];
 			int source = GetSourceFromMove(move);
 			int dest = GetDestFromMove(move);
 			if (sr == GetRow(source) && sc == GetCol(source) && er == GetRow(dest) && ec == GetCol(dest))

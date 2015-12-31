@@ -24,68 +24,78 @@ import java.util.ArrayList;
 
 public class MochaChessCordova extends CordovaPlugin
 {
-    /* Load the native library. */
     static
     {
-        System.loadLibrary("mochaChessNative");
+        System.loadLibrary("MochaChessLib");
     }
 
-
-    /**
-     * Sets the context of the Command. This can then be used to do things like
-     * get file paths associated with the Activity.
-     *
-     * @param cordova The context of the main Activity.
-     * @param webView The CordovaWebView Cordova is running in.
-     */
+	public static native String GetPiece(int row, int col);
+	public static native void MakeBestMove();
+	public static native void MakeMove(int startRow, int startCol, int endRow, int endCol);
+	public static native boolean IsValidMoveStart(int row, int col);
+	public static native boolean IsValidMove(int startRow, int startCol, int endRow, int endCol);
+	public static native void InitializeBoard();
+	
     @Override
     public void initialize(final CordovaInterface cordova, CordovaWebView webView)
     {
         super.initialize(cordova, webView);
     }
 
-    /**
-     * Executes the request and returns PluginResult.
-     *
-     * @param action            The action to execute.
-     * @param args              JSONArray of arguments for the plugin.
-     * @param callbackContext   The callback context used when calling back into JavaScript.
-     * @return                  True when the action was valid, false otherwise.
-     */
     @Override
     public boolean execute(String action, final JSONArray data, final CallbackContext callbackContext) throws JSONException
     {
         if (action.equals("getPiece"))
         {
-            int row = data.getInt(0);
-            int col = data.getInt(1);
+			JSONObject square = data.getJSONObject(0);
+            int row = square.getInt("row");
+            int col = square.getInt("col");
 
+			String result = GetPiece(row, col);
+			callbackContext.success(result);
             return true;
         }
         if (action.equals("makeBestMove"))
         {
-            callbackContext.success("Disconnected");
+			MakeBestMove();
+            callbackContext.success();
             return true;
         }
         else if (action.equals("makeMove"))
         {
-     	    int sr = data.getInt(0);
-            int sc = data.getInt(1);
-			int er = data.getInt(2);
-            int ec = data.getInt(3);
-
+			JSONObject move = data.getJSONObject(0);
+            int sr = move.getInt("startRow");
+            int sc = move.getInt("startCol");
+			int er = move.getInt("endRow");
+            int ec = move.getInt("endCol");
+			MakeMove(sr, sc, er, ec);
+     	    callbackContext.success();
             return true;
         }
         else if (action.equals("isValidMoveStart"))
         {
+			JSONObject square = data.getJSONObject(0);
+            int row = square.getInt("row");
+            int col = square.getInt("col");
+			boolean result = IsValidMoveStart(row, col);
+			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
+			return true;
         }
         else if (action.equals("isValidMove"))
         {
-                 return true;
+			JSONObject move = data.getJSONObject(0);
+            int sr = move.getInt("startRow");
+            int sc = move.getInt("startCol");
+			int er = move.getInt("endRow");
+            int ec = move.getInt("endCol");
+     	    boolean result = IsValidMove(sr, sc, er, ec);
+			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
+        	return true;
         }
         else if (action.equals("initializeBoard"))
         {
-     
+			InitializeBoard();
+     		callbackContext.success();
             return true;
         }
           

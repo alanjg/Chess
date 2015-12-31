@@ -6,7 +6,7 @@
 
 namespace SjelkjdChessEngine
 {
-	class ChessEngine sealed
+	class ChessEngine
 	{
 		std::auto_ptr<Board> board;
 		std::auto_ptr<Search> search;

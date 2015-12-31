@@ -3,7 +3,6 @@
 #include "MoveGenerator.h"
 #include "TranspositionTable.h"
 #include "Evaluation.h"
-#include <immintrin.h>
 
 namespace SjelkjdChessEngine
 {

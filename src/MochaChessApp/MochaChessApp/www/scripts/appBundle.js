@@ -69,7 +69,7 @@ var MochaChessApp;
             board.onmousedown = onMouseDown;
             board.onmousemove = onMouseMove;
             board.ontouchstart = onTouchStart;
-            document.addEventListener('touchmove', function(e) { e.preventDefault();}, false);
+            document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
@@ -127,7 +127,7 @@ var MochaChessApp;
                                         updateBoard();
                                         Application.computerMoving = false;
                                     }, function () { });
-                                }, 1);
+                                }, 0);
                             }, function () { }, move);
                         }
                         else {
@@ -149,7 +149,8 @@ var MochaChessApp;
                             Application.startY = y;
                             Application.squares[r][c].classList.add('moveSource');
                         }
-                    }, function () { }, square));
+                    }, function () { }, square))
+                        ;
                 }
             }
         }

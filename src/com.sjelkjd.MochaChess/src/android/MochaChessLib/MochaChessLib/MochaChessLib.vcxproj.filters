@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="MochaChessLib.cpp" />
+    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="ChessEngine.cpp" />
+    <ClCompile Include="EndgameTable.cpp" />
+    <ClCompile Include="Evaluation.cpp" />
+    <ClCompile Include="MoveGenerator.cpp" />
+    <ClCompile Include="Search.cpp" />
+    <ClCompile Include="StaticExchangeEvaluator.cpp" />
+    <ClCompile Include="TranspositionTable.cpp" />
+    <ClCompile Include="Types.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MochaChessLib.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="ChessEngine.h" />
+    <ClInclude Include="EndgameTable.h" />
+    <ClInclude Include="Evaluation.h" />
+    <ClInclude Include="HashTable.h" />
+    <ClInclude Include="MoveGenerator.h" />
+    <ClInclude Include="Search.h" />
+    <ClInclude Include="StaticExchangeEvaluator.h" />
+    <ClInclude Include="TranspositionTable.h" />
+    <ClInclude Include="Types.h" />
+  </ItemGroup>
+</Project>
