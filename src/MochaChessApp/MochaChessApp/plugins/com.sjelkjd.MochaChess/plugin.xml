@@ -18,33 +18,44 @@
 
     <!-- android -->
     <platform name="android">
-        <config-file target="config.xml" parent="/*">
-            <feature name="Echo">
-                <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
+		<hook type="before_compile" src="src/android/scripts/androidBeforeBuild.js" />
+		<hook type="after_compile" src="src/android/scripts/androidupdateSettings.js" />
+		 <js-module src="www/MochaChess.js" name="MochaChess">
+        	<merges target="chess" />
+	   </js-module>
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="MochaChess">
+                <param name="android-package" value="org.sjelkjd.MochaChess.MochaChessCordova"/>
+				<param name="onload" value="true"/>
             </feature>
         </config-file>
 		
-        <source-file src="src/android/java/MochaChessCordova.java" target-dir="." />
-        <source-file src="src/android/jni/ChessEngine.cpp" target-dir="." />
-        <source-file src="src/android/jni/ChessEngine.h" target-dir="." />
-        <source-file src="src/android/jni/Board.cpp" target-dir="." />
-        <header-file src="src/android/jni/Board.h" target-dir="." />
-        <source-file src="src/android/jni/EndgameTable.cpp" target-dir="." />
-        <header-file src="src/android/jni/EndgameTable.h" target-dir="." />
-        <source-file src="src/android/jni/Evaluation.cpp" target-dir="." />
-        <header-file src="src/android/jni/Evaluation.h" target-dir="." />
-        <source-file src="src/android/jni/MoveGenerator.cpp" target-dir="." />
-        <header-file src="src/android/jni/MoveGenerator.h" target-dir="." />
-        <source-file src="src/android/jni/Search.cpp" target-dir="." />
-        <header-file src="src/android/jni/Search.h" target-dir="." />
-        <source-file src="src/android/jni/StaticExchangeEvaluator.cpp" target-dir="." />
-        <header-file src="src/android/jni/StaticExchangeEvaluator.h" target-dir="." />
-        <source-file src="src/android/jni/TranspositionTable.cpp" target-dir="." />
-        <header-file src="src/android/jni/TranspositionTable.h" target-dir="." />
-        <source-file src="src/android/jni/Types.cpp" target-dir="." />
-        <header-file src="src/android/jni/Types.h" target-dir="." />
-        <header-file src="src/android/jni/pch.h" target-dir="." />
-        <header-file src="src/android/jni/HashTable.h" target-dir="." />
+        
+        <source-file src="src/android/jni/ChessEngine.cpp" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/ChessEngine.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/Board.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/Board.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/EndgameTable.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/EndgameTable.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/Evaluation.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/Evaluation.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/MoveGenerator.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/MoveGenerator.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/Search.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/Search.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/StaticExchangeEvaluator.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/StaticExchangeEvaluator.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/TranspositionTable.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/TranspositionTable.h" target-dir="MochaChessLib/src" />
+        <source-file src="src/android/jni/Types.cpp" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/Types.h" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/pch.h" target-dir="MochaChessLib/src" />
+        <header-file src="src/android/jni/HashTable.h" target-dir="MochaChessLib/src" />
+		
+		<source-file src="src/android/java/MochaChessCordova.java" target-dir="src/org/sjelkjd/MochaChess" />
+		
+		<source-file src="src/android/gradle/build.gradle" target-dir="MochaChessLib" />
+		<source-file src="src/android/gradle/AndroidManifest.xml" target-dir="MochaChessLib/src/Main" />
     </platform>
 
     <!-- ios -->
