@@ -98,8 +98,13 @@ namespace SjelkjdChessEngine
 		return false;
 	}
 
-	void ChessEngine::initializeBoard()
+	void ChessEngine::setStartPosition()
 	{
 		board->SetFEN(Board::startPosition);
+	}
+	
+	void ChessEngine::setPosition(std::string& fen)
+	{
+		board->SetFEN(fen);
 	}
 }

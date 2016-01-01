@@ -1,8 +1,3 @@
-var Piece = (function () {
-    function Piece() {
-    }
-    return Piece;
-})();
 // For an introduction to the Blank template, see the following documentation:
 // http://go.microsoft.com/fwlink/?LinkID=397705
 // To debug code on page load in Ripple or on Android devices/emulators: launch your app, set breakpoints, 
@@ -11,8 +6,24 @@ var Piece = (function () {
 var MochaChessApp;
 (function (MochaChessApp) {
     "use strict";
+    var Position = (function () {
+        function Position() {
+        }
+        return Position;
+    })();
+    var Move = (function () {
+        function Move() {
+        }
+        return Move;
+    })();
+    var Color;
+    (function (Color) {
+        Color[Color["White"] = 0] = "White";
+        Color[Color["Black"] = 1] = "Black";
+    })(Color || (Color = {}));
     var Application;
     (function (Application) {
+        Application.positions = [];
         Application.pieces = [];
         Application.squares = [];
         Application.playerMoving = false;
@@ -46,30 +57,87 @@ var MochaChessApp;
         function onDeviceReady() {
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
+            document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+            Application.engine = window.chess;
+        }
+        function setPositions(data) {
+            for (var i = 0; i < data.length; i++) {
+                var position = new Position();
+                position.fen = data[i].fen;
+                var moveValue = data[i].move;
+                var move = new Move();
+                move.startRow = parseInt(moveValue[0]);
+                move.startCol = parseInt(moveValue[1]);
+                move.endRow = parseInt(moveValue[2]);
+                move.endCol = parseInt(moveValue[3]);
+                position.move = move;
+                Application.positions.push(position);
+            }
+        }
+        Application.setPositions = setPositions;
+        function solveProblem(index) {
+            var fen = Application.positions[index].fen;
+            var color = fen[fen.indexOf(' ') + 1] == 'w' ? Color.White : Color.Black;
+            Application.color = color;
+            setupBoard(color);
+            Application.engine.setPosition(function () { }, function () { }, fen);
+            initializeBoard();
+        }
+        Application.solveProblem = solveProblem;
+        function startGame(white) {
+            Application.color = white ? Color.White : Color.Black;
+            setupBoard(Application.color);
+            Application.engine.setStartPosition(function () { }, function () { });
+            initializeBoard();
+            if (Application.color == Color.Black) {
+                Application.computerMoving = true;
+                setTimeout(function () {
+                    Application.engine.makeBestMove(function () {
+                        updateBoard();
+                        Application.computerMoving = false;
+                    }, function () { });
+                }, 0);
+            }
+        }
+        Application.startGame = startGame;
+        function adjustRowForColor(index) {
+            if (Application.color == Color.White) {
+                return 7 - index;
+            }
+            else {
+                return index;
+            }
+        }
+        function adjustColForColor(index) {
+            if (Application.color == Color.Black) {
+                return 7 - index;
+            }
+            else {
+                return index;
+            }
+        }
+        function setupBoard(color) {
             var board = document.getElementById('board');
             for (var i = 0; i < 8; i++) {
                 Application.pieces[i] = [];
                 Application.squares[i] = [];
                 for (var j = 0; j < 8; j++) {
                     var square = document.createElement('div');
-                    var x = .125 * j * 100;
-                    var y = .125 * (7 - i) * 100;
+                    var x = .125 * adjustColForColor(j) * 100;
+                    var y = .125 * adjustRowForColor(i) * 100;
                     square.style.left = x + "%";
                     square.style.top = y + "%";
                     square.classList.add('square');
-                    if (((i + j) % 2) == 0) {
+                    if (((i + j) % 2) == 1) {
                         square.classList.add('darkSquare');
                     }
                     board.appendChild(square);
                     Application.squares[i][j] = square;
                 }
             }
-            Application.engine = window.chess;
-            initializeBoard();
             board.onmousedown = onMouseDown;
             board.onmousemove = onMouseMove;
             board.ontouchstart = onTouchStart;
-            document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
@@ -108,8 +176,8 @@ var MochaChessApp;
             var rect = board.getBoundingClientRect();
             var xx = x - rect.left;
             var yy = y - rect.top;
-            var r = 7 - (Math.ceil((yy / rect.height) * 8) - 1);
-            var c = Math.ceil((xx / rect.width) * 8) - 1;
+            var r = adjustRowForColor(Math.ceil((yy / rect.height) * 8) - 1);
+            var c = adjustColForColor(Math.ceil((xx / rect.width) * 8) - 1);
             if (0 <= r && r <= 7 && 0 <= c && c <= 7) {
                 if (Application.playerMoving) {
                     var move = {
@@ -159,8 +227,8 @@ var MochaChessApp;
             var pieces = Application.pieces;
             var board = document.querySelector('#board');
             var piece = document.querySelector('#' + getPieceName(pieceName)).cloneNode(true);
-            var x = .125 * col * 100;
-            var y = .125 * (7 - row) * 100;
+            var x = .125 * adjustColForColor(col) * 100;
+            var y = .125 * adjustRowForColor(row) * 100;
             piece.style.left = x + "%";
             piece.style.top = y + "%";
             piece.style.visibility = "visible";
@@ -185,8 +253,6 @@ var MochaChessApp;
             }, function () { }, square);
         }
         function initializeBoard() {
-            var engine = Application.engine;
-            engine.initializeBoard(function () { }, function () { });
             var r = 0;
             var c = 0;
             for (r = 0; r < 8; r++) {

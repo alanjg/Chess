@@ -6,7 +6,7 @@ module.exports = {
 			successCallback(res);
 	        }
         	else {
-			errorCallback(input);
+			errorCallback();
         	}	
 	},
 
@@ -16,7 +16,7 @@ module.exports = {
 			successCallback();
 	        }
         	else {
-			errorCallback(input);
+			errorCallback();
         	}	
 	},
 
@@ -26,7 +26,7 @@ module.exports = {
 			successCallback();
 	        }
         	else {
-			errorCallback(input);
+			errorCallback();
         	}	
 	},
 
@@ -36,7 +36,7 @@ module.exports = {
 			successCallback(res);
 	        }
         	else {
-			errorCallback(input);
+			errorCallback();
         	}	
 	},
 
@@ -46,13 +46,20 @@ module.exports = {
 			successCallback(res);
 	        }
         	else {
-			errorCallback(input);
+			errorCallback();
         	}	
 	},
 
-	initializeBoard: function(successCallback,errorCallback,input) {
+	setStartPosition: function(successCallback,errorCallback,input) {
 		if(input) {
-			engine.initializeBoard();
+			engine.setStartPosition();
+			successCallback();
+	    }
+	},
+	
+	setPosition: function(successCallback,errorCallback,input) {
+		if(input) {
+			engine.setPosition(input[0]);
 			successCallback();
 	    }
 	}

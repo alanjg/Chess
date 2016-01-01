@@ -11,6 +11,7 @@
 - (void)makeMove:(CDVInvokedUrlCommand*)command;
 - (void)isValidMoveStart:(CDVInvokedUrlCommand*)command;
 - (void)isValidMove:(CDVInvokedUrlCommand*)command;
-- (void)initializeBoard:(CDVInvokedUrlCommand*)command;
+- (void)setPosition:(CDVInvokedUrlCommand*)command;
+- (void)setStartPosition:(CDVInvokedUrlCommand*)command;
 
 @end

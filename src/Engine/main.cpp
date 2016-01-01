@@ -211,6 +211,8 @@ int main(int argc,char** argv)
 	}
 	else
 	{
+		ConvertBestMove();
+		return 0;
 		//PerfTHard();
 		//TestPinMask();
 	//	EndgameTableDatabase b;

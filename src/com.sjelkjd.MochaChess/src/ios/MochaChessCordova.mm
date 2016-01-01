@@ -169,9 +169,19 @@ std::auto_ptr<SjelkjdChessEngine::MoveGenerator> moveGenerator;
 
 }
 
-- (void)initializeBoard:(CDVInvokedUrlCommand*)command
+- (void)setStartPosition:(CDVInvokedUrlCommand*)command
 {
     board->SetFEN(Board::startPosition);
+    
+    CDVPluginResult* pluginResult = nil;
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)setPosition:(CDVInvokedUrlCommand*)command
+{
+	NSString* fen = [command.arguments objectAtIndex:0];
+    board->SetFEN(fen);
     
     CDVPluginResult* pluginResult = nil;
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];

@@ -20,8 +20,11 @@ MochaChess.isValidMove = function(successCallback, errorCallback, input) {
 	cordova.exec(successCallback, errorCallback, "MochaChess", "isValidMove", [input]);
 }
 
-MochaChess.initializeBoard = function(successCallback, errorCallback, input) {
-	cordova.exec(successCallback, errorCallback, "MochaChess", "initializeBoard", [input]);
+MochaChess.setStartPosition = function(successCallback, errorCallback, input) {
+	cordova.exec(successCallback, errorCallback, "MochaChess", "setStartPosition", [input]);
 }
 
+MochaChess.setPosition = function(successCallback, errorCallback, input) {
+	cordova.exec(successCallback, errorCallback, "MochaChess", "setPosition", [input]);
+}
 module.exports = MochaChess;

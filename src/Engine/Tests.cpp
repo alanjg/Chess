@@ -708,6 +708,55 @@ void TestSee(std::string fen, std::string captures[], int results[], int testcou
 	}
 }
 
+void ConvertBestMove()
+{
+	ifstream in("C:\\Users\\alanga\\Documents\\GitHub\\Chess\\Resources\\moves.txt");
+	ofstream outfile("moves.json");
+	outfile << "[" << endl;
+	int num = 0;
+	int yes = 0;
+	int no = 0;
+	string line;
+	bool first = true;
+	while (getline(in, line))
+	{
+		// format is rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 ;D1 20 ;D2 400 ;D3 8902 ;D4 197281 ;D5 4865609 ;D6 119060324
+		string fen = line.substr(0, line.find(';'));
+		string bestMoveChoice = line.substr(line.find(';') + 1);
+		Board board;
+		board.SetFEN(fen);
+		vector<int> moves;
+		MoveGenerator moveGenerator(board);
+		moveGenerator.GenerateAllMoves(moves);
+		int bestMove = NullMove;
+		for (uint i = 0; i<moves.size(); i++)
+		{
+			int move = moves[i];
+			if (GetShortAlgebraicString(move, board) == bestMoveChoice || GetUCIString(move) == bestMoveChoice)
+			{
+				bestMove = move;
+			}
+		}
+		if (bestMove == NullMove)
+		{
+			//Console.WriteLine("Could not find a best move for FEN=" + fen + ", bestMoveChoice=" + bestMoveChoice);
+			continue;
+		}
+		int source = GetSourceFromMove(bestMove);
+		int dest = GetDestFromMove(bestMove);
+		
+		if (!first)
+		{
+			outfile << ",";
+			outfile << endl;
+		}
+		outfile << "{ \"fen\": \"" << fen << "\", \"move\": \"" << GetRow(source) << GetCol(source) << GetRow(dest) << GetCol(dest) << "\" }";
+		first = false;
+
+	}
+	outfile << endl << "]";
+}
+
 void BestMoveCheck()
 {
 	ifstream in("moves.txt");

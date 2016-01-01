@@ -9,7 +9,6 @@ namespace ChessEngineUWP
 		Board* b = new Board();
 		board.reset(b);
 		search.reset(new Search(*b));
-		board->SetFEN(Board::startPosition);
 		moveGenerator.reset(new MoveGenerator(*b));
 	}
 
@@ -95,8 +94,15 @@ namespace ChessEngineUWP
 		return false;
 	}
 
-	void ChessEngine::initializeBoard()
+	void ChessEngine::setStartPosition()
 	{
 		board->SetFEN(Board::startPosition);
+	}
+	
+	void ChessEngine::setPosition(Platform::String^ fen)
+	{
+		std::wstring wf(fen->Data());
+		std::string f(wf.begin(), wf.end());
+		board->SetFEN(f);
 	}
 }

@@ -18,7 +18,8 @@ namespace SjelkjdChessEngine
 		void MakeComputerMove();
 		bool isValidMoveStart(int row, int col);
 		bool isValidMove(int sr, int sc, int er, int ec);
-		void initializeBoard();
+		void setStartPosition();
+		void setPosition(std::string& fen);
 	};
 }
 

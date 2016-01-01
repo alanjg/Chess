@@ -33,6 +33,7 @@ namespace SjelkjdChessEngine
 	void BadQueenAttack();
 	void MissedQueenLoss();
 	void BestMoveCheckPositional();
+	void ConvertBestMove();
 	void TestPinMask();
 	void BoardCorruption();
 	void TestMoveScores();

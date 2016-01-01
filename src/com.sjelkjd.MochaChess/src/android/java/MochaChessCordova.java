@@ -34,12 +34,15 @@ public class MochaChessCordova extends CordovaPlugin
 	public static native void MakeMove(int startRow, int startCol, int endRow, int endCol);
 	public static native boolean IsValidMoveStart(int row, int col);
 	public static native boolean IsValidMove(int startRow, int startCol, int endRow, int endCol);
-	public static native void InitializeBoard();
+	public static native void Initialize();
+	public static native void SetStartPosition();
+	public static native void SetPosition(String fen);
 	
     @Override
     public void initialize(final CordovaInterface cordova, CordovaWebView webView)
     {
         super.initialize(cordova, webView);
+		Initialize();
     }
 
     @Override
@@ -92,9 +95,15 @@ public class MochaChessCordova extends CordovaPlugin
 			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
         	return true;
         }
-        else if (action.equals("initializeBoard"))
+        else if (action.equals("setStartPosition"))
         {
-			InitializeBoard();
+			SetStartPosition();
+     		callbackContext.success();
+            return true;
+        }
+        else if (action.equals("setPosition"))
+        {
+			SetPosition(data.getString(0));
      		callbackContext.success();
             return true;
         }

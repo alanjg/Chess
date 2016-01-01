@@ -34,9 +34,15 @@ isValidMove(
 	input: Move
 	): void;
 	
-initializeBoard(
+setStartPosition(
 	successCallback: () => void,
 	errorCallback: () => void
+	): void;
+	
+setPosition(
+	successCallback: () => void,
+	errorCallback: () => void,
+	input: string
 	): void;
 
 }
@@ -51,4 +57,14 @@ interface Move {
 	startCol: number;
 	endRow: number;
 	endCol: number;
+}
+
+interface StoredPosition {
+    fen: string;
+    move: string;
+}
+
+interface Position {
+    fen: string;
+    move: Move;
 }

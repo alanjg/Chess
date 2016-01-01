@@ -7,10 +7,20 @@
 body {
 }
 
-.boardContainer {
-	position: relative;
-	width: 100%;		
+@media screen and (min-aspect-ratio: 1/1) {
+	.boardContainer {
+		position: relative;
+		width: 50%;		
+	}
 }
+
+@media screen and (max-aspect-ratio: 1/1) {
+	.boardContainer {
+		position: relative;
+		width: 100%;		
+	}
+}
+
 .boardContainer:before {
 	content: "";
 	display: block;
