@@ -1,5 +1,15 @@
 var engine = new ChessEngineUWP.ChessEngine();
 module.exports = {
+    getBoard: function(successCallback,errorCallback,input) {
+		if(input) {
+			var res = engine.getBoard();
+			successCallback(res);
+	        }
+        	else {
+			errorCallback();
+        	}	
+	},
+    
 	getPiece: function(successCallback,errorCallback,input) {
 		if(input) {
 			var res = engine.getPiece(input[0].row, input[0].col);

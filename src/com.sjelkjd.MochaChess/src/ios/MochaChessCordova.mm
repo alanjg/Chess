@@ -26,6 +26,16 @@ std::auto_ptr<SjelkjdChessEngine::MoveGenerator> moveGenerator;
     moveGenerator.reset(new SjelkjdChessEngine::MoveGenerator(*b));
 }
 
+
+- (void)getBoard:(CDVInvokedUrlCommand*)command
+{
+    std::string b = board->ToString();
+    CDVPluginResult* pluginResult = nil;
+    NSString* result = [NSString stringWithUTF8String:b.c_str()];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void)getPiece:(CDVInvokedUrlCommand*)command
 {
     NSDictionary* args = [command.arguments objectAtIndex:0];

@@ -29,6 +29,7 @@ public class MochaChessCordova extends CordovaPlugin
         System.loadLibrary("MochaChessLib");
     }
 
+    public static native String GetBoard());
 	public static native String GetPiece(int row, int col);
 	public static native void MakeBestMove();
 	public static native void MakeMove(int startRow, int startCol, int endRow, int endCol);
@@ -48,7 +49,13 @@ public class MochaChessCordova extends CordovaPlugin
     @Override
     public boolean execute(String action, final JSONArray data, final CallbackContext callbackContext) throws JSONException
     {
-        if (action.equals("getPiece"))
+        if (action.equals("getBoard"))
+        {
+			String result = GetBoard();
+			callbackContext.success(result);
+            return true;
+        }
+        else if (action.equals("getPiece"))
         {
 			JSONObject square = data.getJSONObject(0);
             int row = square.getInt("row");
@@ -58,7 +65,7 @@ public class MochaChessCordova extends CordovaPlugin
 			callbackContext.success(result);
             return true;
         }
-        if (action.equals("makeBestMove"))
+        else if (action.equals("makeBestMove"))
         {
 			MakeBestMove();
             callbackContext.success();

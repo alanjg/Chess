@@ -14,6 +14,7 @@ namespace ChessEngineUWP
 		ChessEngine();
 		void makeMove(int sr, int sc, int er, int ec);
 		Platform::String^ getPiece(int row, int col);
+        Platform::String^ getBoard();
 		void makeComputerMove();
 		bool isValidMoveStart(int row, int col);
 		bool isValidMove(int sr, int sc, int er, int ec);

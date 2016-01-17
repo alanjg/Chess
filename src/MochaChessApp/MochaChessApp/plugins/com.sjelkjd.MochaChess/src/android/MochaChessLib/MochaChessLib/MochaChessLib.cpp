@@ -8,6 +8,12 @@ extern "C" {
 		chessEngine.reset(new SjelkjdChessEngine::ChessEngine());
 	}
 
+    JNIEXPORT jstring JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_GetBoard(JNIEnv *je, jclass jc)
+	{
+		std::string board = chessEngine->GetBoard;
+		return je->NewStringUTF(board.c_str());
+	}
+    
 	JNIEXPORT jstring JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_GetPiece(JNIEnv *je, jclass jc, jint row, jint col)
 	{
 		std::string piece = chessEngine->GetPiece(row, col);

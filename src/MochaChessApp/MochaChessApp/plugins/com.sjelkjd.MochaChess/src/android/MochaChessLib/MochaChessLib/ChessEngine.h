@@ -15,6 +15,7 @@ namespace SjelkjdChessEngine
 		ChessEngine();
 		void MakeMove(int sr, int sc, int er, int ec);
 		std::string GetPiece(int row, int col);
+        std::string GetBoard();
 		void MakeComputerMove();
 		bool isValidMoveStart(int row, int col);
 		bool isValidMove(int sr, int sc, int er, int ec);

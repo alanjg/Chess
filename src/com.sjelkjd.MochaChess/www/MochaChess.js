@@ -1,5 +1,9 @@
 var MochaChess = {};
 
+MochaChess.getBoard = function(successCallback, errorCallback, input) {
+	cordova.exec(successCallback, errorCallback, "MochaChess", "getBoard", [input]);
+}
+
 MochaChess.getPiece = function(successCallback, errorCallback, input) {
 	cordova.exec(successCallback, errorCallback, "MochaChess", "getPiece", [input]);
 }

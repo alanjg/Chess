@@ -57,6 +57,11 @@ namespace SjelkjdChessEngine
 		}
 		return p;
 	}
+    
+    std::string ChessEngine::GetBoard()
+	{
+		return board->ToString();
+	}
 
 	void ChessEngine::MakeComputerMove()
 	{

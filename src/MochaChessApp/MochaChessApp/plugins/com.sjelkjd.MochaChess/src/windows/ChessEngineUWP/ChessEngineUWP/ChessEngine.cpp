@@ -55,6 +55,13 @@ namespace ChessEngineUWP
 		}
 		return ref new Platform::String(p.c_str());
 	}
+    
+    Platform::String^ ChessEngine::getBoard()
+	{
+		std::string b = board->ToString();
+		std::wstring pb(b.begin(), b.end());
+		return ref new Platform::String(pb.c_str());
+	}
 
 	void ChessEngine::makeComputerMove()
 	{

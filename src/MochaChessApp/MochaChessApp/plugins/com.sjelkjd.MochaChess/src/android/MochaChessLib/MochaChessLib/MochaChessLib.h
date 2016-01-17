@@ -4,6 +4,7 @@
 extern "C" {
 
 	JNIEXPORT void JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_Initialize(JNIEnv *, jclass);
+    JNIEXPORT jstring JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_GetBoard(JNIEnv *, jclass);
 	JNIEXPORT jstring JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_GetPiece(JNIEnv *, jclass, jint, jint);
 	JNIEXPORT void JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_MakeBestMove(JNIEnv *, jclass);
 	JNIEXPORT void JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_MakeMove(JNIEnv *, jclass, jint, jint, jint, jint);

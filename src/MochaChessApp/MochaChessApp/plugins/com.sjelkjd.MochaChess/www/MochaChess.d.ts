@@ -4,6 +4,10 @@ interface Window {
 
 interface ChessEngine
 {
+getBoard(
+	successCallback: (result: string) => void,
+	errorCallback: () => void
+	): void;
 
 getPiece(
 	successCallback: (result: string) => void,

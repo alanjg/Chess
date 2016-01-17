@@ -4,8 +4,10 @@
 	<div class="boardContainer">
 		<div id="board" class="board"></div>
 	</div>
-	<div>Correct!</div>
-	<div>Wrong!</div>
-	<button>Next</button>
-	<button>Quit</button>
+	<div ng-show="showCorrect">Correct!</div>
+	<div ng-show="showWrong">Wrong!</div>
+	<button ng-show="showTryAgain" ng-click="clickTryAgain()">Try Again</button>
+	<button ng-show="showAnswer" ng-click="clickShowAnswer()">Show Answer</button>
+	<button ng-show="showNext" ng-click="clickNext()">Next</button>
+	<button ng-click="clickQuit()">Quit</button>
 </div>
