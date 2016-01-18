@@ -29,7 +29,7 @@ public class MochaChessCordova extends CordovaPlugin
         System.loadLibrary("MochaChessLib");
     }
 
-    public static native String GetBoard());
+    public static native String GetBoard();
 	public static native String GetPiece(int row, int col);
 	public static native void MakeBestMove();
 	public static native void MakeMove(int startRow, int startCol, int endRow, int endCol);

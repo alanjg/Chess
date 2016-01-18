@@ -10,7 +10,7 @@ extern "C" {
 
     JNIEXPORT jstring JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_GetBoard(JNIEnv *je, jclass jc)
 	{
-		std::string board = chessEngine->GetBoard;
+		std::string board = chessEngine->GetBoard();
 		return je->NewStringUTF(board.c_str());
 	}
     
@@ -32,7 +32,6 @@ extern "C" {
 
 	JNIEXPORT jboolean JNICALL Java_org_sjelkjd_MochaChess_MochaChessCordova_IsValidMoveStart(JNIEnv *je, jclass jc, jint row, jint col)
 	{
-		
 		return chessEngine->isValidMoveStart(row, col);
 	}
 	
