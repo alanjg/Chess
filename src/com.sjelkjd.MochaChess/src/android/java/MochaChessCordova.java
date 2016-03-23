@@ -67,8 +67,14 @@ public class MochaChessCordova extends CordovaPlugin
         }
         else if (action.equals("makeBestMove"))
         {
-			MakeBestMove();
-            callbackContext.success();
+			cordova.getThreadPool().execute(new Runnable() 
+			{
+                public void run() 
+				{    
+					MakeBestMove();
+                    callbackContext.success();
+                }
+            });
             return true;
         }
         else if (action.equals("makeMove"))
