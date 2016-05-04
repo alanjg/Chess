@@ -80,6 +80,7 @@ void PerfTTests()
 void PerfTHard()
 {
 	string positions [] = {
+		"rnb1kbnr/ppp1pppp/8/3p4/1P6/P2P3q/2P1PPP1/RNBQKBNR b KQkq - 0 4",
 		"r3k2r/8/8/8/3pPp2/8/8/R3K1RR b KQkq e3 0 1",
 		"r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1",
 		"8/7p/p5pb/4k3/P1pPn3/8/P5PP/1rB2RK1 b - d3 0 28",
@@ -94,6 +95,7 @@ void PerfTHard()
 		"r3k2r/pb3p2/5npp/n2p4/1p1PPB2/6P1/P2N1PBP/R3K2R w KQkq -"
 	};
 	ulong expected [] = {
+		44950307154,
 		485647607,
 706045033,
 38633283,
@@ -108,7 +110,7 @@ void PerfTHard()
 29179893
 	};
 	int depth [] = {
-6,6,6,7,6,5,8,6,6,7,8,5
+7,6,6,6,7,6,5,8,6,6,7,8,5
 	};
 
 	string test;

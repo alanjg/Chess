@@ -3,7 +3,9 @@
     export class ChessGame {
         board: Board;
         computerMoving: boolean;
-        constructor(boardElement: HTMLElement, playerColor: Color) {
+        onGameOver: any;
+        constructor(boardElement: HTMLElement, playerColor: Color, onGameOver) {
+            this.onGameOver = onGameOver;
             this.board = new Board(boardElement);
             this.board.setupBoard(playerColor);
             this.board.engine.setStartPosition(() => { }, () => { });

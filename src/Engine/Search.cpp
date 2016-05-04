@@ -105,7 +105,7 @@ namespace SjelkjdChessEngine
 			{
 				if (!suppressLogging)
 				{
-				cout << "aspiration failed." << endl;
+					cout << "aspiration failed." << endl;
 				}
 				alpha = -numeric_limits<int>::max();
 				beta = numeric_limits<int>::max();

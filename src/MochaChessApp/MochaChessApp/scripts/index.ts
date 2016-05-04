@@ -71,14 +71,23 @@ module MochaChessApp {
             mochaChessApp.controller('playComputerController', function ($scope, PlayerData) {
                 $scope.player = PlayerData;
                 $scope.$on('$includeContentLoaded', function () {
-                    var game = new ChessGame(document.getElementById('board'), $scope.player.color == "white" ? Color.White : Color.Black);
+                    var game = new ChessGame(document.getElementById('board'), $scope.player.color == "white" ? Color.White : Color.Black, () => {
+                        //on game over
+                    });
 
                 });
             });
 
             mochaChessApp.controller('solveProblemController', function ($scope, $http, $location) {
-                var problemIndex = 0;
                 var setupSolver = function () {
+                    var problemIndex = window.localStorage.getItem('problemIndex');
+                    if (problemIndex == null) {
+                        problemIndex = 0;
+                        window.localStorage.setItem('problemIndex', "0");
+                    }
+                    else {
+                        problemIndex = parseInt(problemIndex);
+                    }
                     Application.chessProblemSolver = new ChessProblemSolver(Application.problemList.getProblem(problemIndex), document.getElementById('board'));
                 };
 
@@ -132,7 +141,9 @@ module MochaChessApp {
 
                 $scope.clickNext = function () {
                     Application.chessProblemSolver.board.teardownBoard();
+                    var problemIndex = parseInt(window.localStorage.getItem('problemIndex'));
                     problemIndex++;
+                    window.localStorage.setItem('problemIndex', problemIndex.toString());
                     $scope.showCorrect = false;
                     $scope.showWrong = false;
                     $scope.showNext = false;
