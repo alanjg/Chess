@@ -6,6 +6,7 @@
 @interface MochaChessEngine : CDVPlugin
 {}
 
+- (void)getBoard:(CDVInvokedUrlCommand*)command;
 - (void)getPiece:(CDVInvokedUrlCommand*)command;
 - (void)makeBestMove:(CDVInvokedUrlCommand*)command;
 - (void)makeMove:(CDVInvokedUrlCommand*)command;

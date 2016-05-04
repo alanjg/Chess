@@ -191,7 +191,7 @@ std::auto_ptr<SjelkjdChessEngine::MoveGenerator> moveGenerator;
 - (void)setPosition:(CDVInvokedUrlCommand*)command
 {
 	NSString* fen = [command.arguments objectAtIndex:0];
-    board->SetFEN(fen);
+    board->SetFEN([fen UTF8String]);
     
     CDVPluginResult* pluginResult = nil;
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
