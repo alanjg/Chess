@@ -1297,4 +1297,107 @@ void Benchmark()
 
 	//pv should be g6f5 e3g3 f5f4 g5e6+ f4g3 h6g7++
 }
+
+
+void TestBadMove1()
+{
+	Board board;
+	board.SetFEN(Board::startPosition);
+	Search search(board);
+	string moves = "e2e4 c7c5 g1f3 d7d6 d2d4 c5d4 f3d4 g8f6 b1c3 b8c6 c1g5 e7e6 d1d2 a7a6 g5e3 f8e7 d4c6 b7c6 f2f3 e8g8 d2d4 c6c5 d4a4 a8b8 e1c1 b8b4 a4a3 d8b6 b2b3 b6c6 f1c4 c6b7 a3b2 c8d7 h2h4 f8b8 b2a3 b4b6 c1b1 f6h5 c3e2 d7b5 c4b5 b6b5 g2g4 h5f6 g4g5 f6h5 a3b2 b5b4 e3d2 b4b6 d2a5 b6b5 a5c3 c5c4 a2a4 b5c5 b3b4 c5c6 b4b5 a6b5 e2d4 c6b6 d4b5 b7a8";
+	istringstream in(moves);
+	string moveStr;
+	MoveGenerator gen(board);
+	while (in >> moveStr)
+	{
+		vector<int> mo;
+		gen.GenerateAllMoves(mo);
+		int move = NullMove;
+		for (unsigned int i = 0; i<mo.size(); i++)
+		{
+			if (GetUCIString(mo[i]) == moveStr || GetShortAlgebraicString(mo[i], board) == moveStr)
+			{
+				move = mo[i];
+			}
+		}
+		if (move == NullMove)
+		{
+			cout << "Illegal move " << moveStr << endl;
+			cout << board.ToString() << endl;
+			break;
+		}
+		board.MakeMove(move, true);
+	}
+	cout << board.ToString() << endl;
+	int bestMove = search.GetBestMove(6.0);
+	Evaluation eval(board);
+	cout << eval.GetScore() << endl;
+}
+
+void TestMobility()
+{
+	Board board;
+	board.SetFEN("6rk/8/8/3R4/8/5PPP/7K w - - 0 1");
+
+	Search search(board);
+	Evaluation eval(board); 
+	ulong white = board.GetColorBitBoard(Colors::White);
+	ulong black = board.GetColorBitBoard(Colors::Black);
+
+	ulong mobility = 0;
+	int kingAttackCount = 0;
+	int wbm = eval.CalculatePieceMobility(PieceTypes::Rook, Colors::White, white, ~white, 0, mobility, kingAttackCount);
+	int bbm = eval.CalculatePieceMobility(PieceTypes::Rook, Colors::Black, black, ~black, 0, mobility, kingAttackCount);
+	cout << wbm << " " << bbm << endl;
+	int wks = eval.CalculateKingSafety(Colors::White);
+	int bks = eval.CalculateKingSafety(Colors::Black);
+	cout << wks << " " << bks << endl;
+
+}
+void TestDraw()
+{
+	Board board;
+	board.SetFEN(Board::startPosition);
+	Search search(board);
+	string moves = "e2e4 c7c5 g1f3 d7d6 d2d4 c5d4 f3d4 g8f6 b1c3 a7a6 c1e3 e7e6 f2f3 e6e5 d4b3 c8e6 c3d5 b8d7 f1c4 f8e7 d5f6 d7f6 c4e6 f7e6 d1e2 d6d5 e1c1 d8c7 e3g5 e8c8 c1b1 h7h6 g5d2 d5e4 f3e4 c7c6 h1e1 g7g5 h2h3 d8d7 b3a5 c6c7 d2c3 d7d1 e1d1 h8d8 d1f1 b7b5 g2g4 c8d7 a5b3 d8b8 f1d1 d7e8 d1d3 b8c8 a2a3 c7c4 b3d2 c4a4 e2e3 e8f7 e3b6 f6e4 d2e4 a4e4 b6a6 c8c5 a6a7 e4h1 b1a2 h1e4 c3b4 e4c4 a2a1 c4c2 b4c5 c2c5 a7c5 e7c5 d3c3 c5d4 c3b3 e5e4 a1b1 e4e3 b1c2 e6e5 b3b5 f7f6 c2d3 e5e4 d3e2";
+	istringstream in(moves);
+	string moveStr;
+	MoveGenerator gen(board);
+	while (in >> moveStr)
+	{
+		vector<int> mo;
+		gen.GenerateAllMoves(mo);
+		int move = NullMove;
+		for (unsigned int i = 0; i<mo.size(); i++)
+		{
+			if (GetUCIString(mo[i]) == moveStr || GetShortAlgebraicString(mo[i], board) == moveStr)
+			{
+				move = mo[i];
+			}
+		}
+		if (move == NullMove)
+		{
+			cout << "Illegal move " << moveStr << endl;
+			cout << board.ToString() << endl;
+			break;
+		}
+		board.MakeMove(move, true);
+	}
+	cout << board.ToString() << endl;
+	int bestMove = search.GetBestMove(6.0);
+	Evaluation eval(board);
+	ulong white = board.GetColorBitBoard(Colors::White);
+	ulong black = board.GetColorBitBoard(Colors::Black);
+
+	ulong mobility = 0;
+	int kingAttackCount = 0;
+	int wbm = eval.CalculatePieceMobility(PieceTypes::Rook, Colors::White, white, ~white, 0, mobility, kingAttackCount);
+	int bbm = eval.CalculatePieceMobility(PieceTypes::Rook, Colors::Black, black, ~black, 0, mobility, kingAttackCount);
+	cout << wbm << " " << bbm << endl;
+	int wks = eval.CalculateKingSafety(Colors::White);
+	int bks = eval.CalculateKingSafety(Colors::Black);
+	cout << wks << " " << bks << endl;
+	cout << eval.GetScore() << endl;
+}
+
 }

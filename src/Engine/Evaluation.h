@@ -8,6 +8,8 @@ namespace SjelkjdChessEngine
 	class Evaluation
 	{
 		friend void TestPawnValues();
+		friend void TestMobility();
+		friend void TestDraw();
 	private:
 		static ulong qpawn[2];
 		static ulong kpawn[2];
@@ -22,7 +24,6 @@ namespace SjelkjdChessEngine
 		static int maxKingSafetyFunction;
 
 		static int pieceValues[];
-		static int endgamePawnSquareValues[2][64];
 		
 		static int pieceSquareValues[16][64];		
 		static int endgamePieceSquareValues[16][64];
@@ -30,10 +31,11 @@ namespace SjelkjdChessEngine
 		static const int passedPawnScore = 15;
 		static const int outpostScore = 4;
 		static const int undefendedPawnScore = -5;
-		static const int doublePawnScore = -8;
+		static const int doublePawnScore = -16;
 
 		// per square
 		static const int advanceScore = 2;
+		static const int passedPawnAdvanceScore = 3;
 
 		static ulong passedPawnMasks[64][2];
 		static ulong outpostPawnMasks[64][2][2];
@@ -75,11 +77,13 @@ namespace SjelkjdChessEngine
 
 		int TotalKingMobility(int color);
 		int CalculateMobility();
-		int CalculateMobility(int color);
+		int CalculateMobility(int color); 
+		int CalculatePieceMobility(int pieceType, int color, ulong allies, ulong notAllies, ulong kingAttackBits, ulong& mobility, int& kingAttackCount);
 		
 		int CalculatePawnScore();
 		int CalculatePawnScore(int color);
-
+		int CalculatePawnPushScore();
+		int CalculatePawnPushScore(int color);
 		
 		int GetPawnScore();
 		int CalculateKingSafety();
@@ -113,7 +117,6 @@ namespace SjelkjdChessEngine
 		}
 
 		int GetScore();
-		int GetMoveAttackValue(int move);
 		bool IsDrawByMaterial();
 		static bool IsDrawByMaterial(const Board& board);
 	};

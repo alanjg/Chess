@@ -42,6 +42,9 @@ namespace SjelkjdChessEngine
 	void TestPawnValues();
 	void TestDiscoveredCheck();
 	void Benchmark();
+	void TestBadMove1();
+	void TestMobility();
+	void TestDraw();
 }
 
 #endif

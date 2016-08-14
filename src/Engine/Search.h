@@ -35,7 +35,7 @@ namespace SjelkjdChessEngine
 		static const int CHECKMATE_ADJUSTMENT = 1000;
 		static const int MIN_CHECKMATE = CHECKMATE - CHECKMATE_ADJUSTMENT * 100;
 		
-		static const int NULL_MOVE_R = 3;
+		static const int NULL_MOVE_R = 2;
 		int historyTableCounter[64][64];
 		int historyTableFailHigh[64][64];
 		int historyTableFailLow[64][64];

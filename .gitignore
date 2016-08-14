@@ -5,7 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
-*.VC.opendb
+*.opendb
 # Build results
 
 [Dd]ebug/

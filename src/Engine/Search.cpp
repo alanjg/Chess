@@ -105,7 +105,7 @@ namespace SjelkjdChessEngine
 			{
 				if (!suppressLogging)
 				{
-				cout << "aspiration failed." << endl;
+					cout << "aspiration failed." << endl;
 				}
 				alpha = -numeric_limits<int>::max();
 				beta = numeric_limits<int>::max();
@@ -149,7 +149,7 @@ namespace SjelkjdChessEngine
 					}
 					cout << endl;
 				}
-				if (IsCheckmate(score) ||m_board.GetIsDrawnByRepetition() || evaluation.IsDrawByMaterial())
+				if (IsCheckmate(score) || m_board.GetIsDrawnByRepetition() || evaluation.IsDrawByMaterial())
 				{
 					break;
 				}
@@ -170,13 +170,20 @@ namespace SjelkjdChessEngine
 		{
 			depth--;
 		}
-		if(!suppressLogging)
+		if (!suppressLogging)
 		{
-			cout << "nodes: " << nodeCount << endl;
-			cout << "qnode: " << qNodeCount << endl;
-			cout << "fprune: " << fprune << endl;
-			cout << "pawn hash hits: " << TranspositionTable::PawnScoreTable.Hits() << ", misses: " << TranspositionTable::PawnScoreTable.Misses() << ", collisions: " << TranspositionTable::PawnScoreTable.Collisions() << endl;
-			cout << "transposition hash hits: " << transpositionTable.hashTable.Hits() << ", misses: " << transpositionTable.hashTable.Misses() << ", collisions: " << transpositionTable.hashTable.Collisions() << endl;
+			int totalNodes = nodeCount + qNodeCount;
+
+			double totalTime = GetElapsedTime();
+			int msTime = (int)(totalTime * 1000);
+			int nodesPerSecond = (int)(totalNodes / totalTime);
+
+			cout << "info nps " << nodesPerSecond << endl;
+		//	cout << "nodes: " << nodeCount << endl;
+		//	cout << "qnode: " << qNodeCount << endl;
+		//	cout << "fprune: " << fprune << endl;
+		//	cout << "pawn hash hits: " << TranspositionTable::PawnScoreTable.Hits() << ", misses: " << TranspositionTable::PawnScoreTable.Misses() << ", collisions: " << TranspositionTable::PawnScoreTable.Collisions() << endl;
+		//	cout << "transposition hash hits: " << transpositionTable.hashTable.Hits() << ", misses: " << transpositionTable.hashTable.Misses() << ", collisions: " << transpositionTable.hashTable.Collisions() << endl;
 		}
 		return chosenMove;	
 	}

@@ -10,7 +10,7 @@ using namespace stdext;
 namespace SjelkjdChessEngine
 {
 	int Evaluation::pieceValues[] = { 100, 300, 300, 500, 900, 50000, -100, -300, -300, -500, -900, -50000, 0 };
-	int Evaluation::pawnRankValue[] = { 0, 0, 10, 20, 40, 60, 80, 0 };
+	int Evaluation::pawnRankValue[] = { 0, 0, 2, 4, 5, 8, 10, 0 };
 	int	Evaluation::kingSafetyFunction[] = 
 			{   0,  2,  3,  6, 12, 18, 25, 37, 50, 75,
               100,125,150,175,200,225,250,275,300,325,
@@ -31,7 +31,6 @@ namespace SjelkjdChessEngine
 	ulong Evaluation::outpostPawnMasks[64][2][2];
 	ulong Evaluation::defendedPawnMasks[64][2];
 	ulong Evaluation::doubledPawnMasks[64][2];
-	int Evaluation::endgamePawnSquareValues[2][64];
 	int Evaluation::pieceSquareValues[16][64];
 	int Evaluation::endgamePieceSquareValues[16][64];
 
@@ -229,12 +228,6 @@ namespace SjelkjdChessEngine
 			int srow = GetRow(square);
 			int scol = GetCol(square);
 
-			// is this a passed pawn?
-			if ((passedPawnMasks[i][colorIndex] & otherPawns) == 0)
-			{
-				score += passedPawnScore;
-			}
-
 			// is this an outpost?
 			if (srow + dRow != lastRow)
 			{
@@ -269,7 +262,54 @@ namespace SjelkjdChessEngine
 			// score the advance
 			int distance = abs(srow - homeRow);
 			score += distance * advanceScore;
+
+			// is this a passed pawn?
+			if ((passedPawnMasks[i][colorIndex] & otherPawns) == 0)
+			{
+				score += passedPawnScore;
+				score += distance * passedPawnAdvanceScore;
+			}
 		}			
+
+		return score;
+	}
+
+	int Evaluation::CalculatePawnPushScore()
+	{
+		return CalculatePawnPushScore(Colors::White) - CalculatePawnPushScore(Colors::Black);
+	}
+
+	int Evaluation::CalculatePawnPushScore(int color)
+	{
+		ulong me = m_board.GetColorBitBoard(color);
+		int currentMaterial = 3 * BitCount(me & (m_board.GetPieceTypeBitBoard(PieceTypes::Knight) | m_board.GetPieceTypeBitBoard(PieceTypes::Bishop))) +
+			5 * BitCount(m_board.GetPieceTypeBitBoard(PieceTypes::Rook) & me) +
+			9 * BitCount(m_board.GetPieceTypeBitBoard(PieceTypes::Queen) & me);
+		if (me > 3)
+		{
+			return 0;
+		}
+		
+		int homeRow = color == Colors::White ? 1 : 6;
+
+		int score = 0;
+
+		int pawn = Pieces::GetPiece(PieceTypes::Pawn, color);
+
+		ulong pawns = m_board.GetPieceBitBoard(pawn);
+
+		ulong pawnIteration = pawns;
+		while (pawnIteration != 0)
+		{
+			int i = PopLowestSetBit(pawnIteration);
+
+			int square(i);
+			int srow = GetRow(square);
+
+			// score the advance
+			int distance = abs(srow - homeRow);
+			score += distance * 50;
+		}
 
 		return score;
 	}
@@ -291,25 +331,23 @@ namespace SjelkjdChessEngine
 			// give more value to center pawns
 			int center = col;
 			value = advance + advance * center;
-			int endgameValue = pawnRankValue[advance];
+			value += pawnRankValue[advance];
 			if (color == Colors::Black)
 			{
-				value *= -1;
-				endgameValue *= -1;
+				value *= -1;	
 			}
 			pieceSquareValues[6 * color + PieceTypes::Pawn][i] = value;
-			endgamePieceSquareValues[6 * color + PieceTypes::Pawn][i] = endgameValue;
-			endgamePawnSquareValues[color][i] = endgameValue;
+			endgamePieceSquareValues[6 * color + PieceTypes::Pawn][i] = value;			
 		}
-		pieceSquareValues[Pieces::WhitePawn][27] = 25;
-		pieceSquareValues[Pieces::WhitePawn][28] = 25;
-		pieceSquareValues[Pieces::WhitePawn][35] = 15;
-		pieceSquareValues[Pieces::WhitePawn][36] = 15;
+		pieceSquareValues[Pieces::WhitePawn][27] = 20;
+		pieceSquareValues[Pieces::WhitePawn][28] = 20;
+		pieceSquareValues[Pieces::WhitePawn][35] = 25;
+		pieceSquareValues[Pieces::WhitePawn][36] = 25;
 
-		pieceSquareValues[Pieces::BlackPawn][27] = -15;
-		pieceSquareValues[Pieces::BlackPawn][28] = -15;
-		pieceSquareValues[Pieces::BlackPawn][35] = -25;
-		pieceSquareValues[Pieces::BlackPawn][36] = -25;
+		pieceSquareValues[Pieces::BlackPawn][27] = -25;
+		pieceSquareValues[Pieces::BlackPawn][28] = -25;
+		pieceSquareValues[Pieces::BlackPawn][35] = -20;
+		pieceSquareValues[Pieces::BlackPawn][36] = -20;
 	}
 
 	void Evaluation::GenerateKnightValues(int color)
@@ -333,14 +371,19 @@ namespace SjelkjdChessEngine
 				value *= -1;
 			}
 			pieceSquareValues[6 * color + PieceTypes::Knight][i] = value;
+			endgamePieceSquareValues[6 * color + PieceTypes::Knight][i] = value;
 		}
 
 		// discourage camping
-		pieceSquareValues[Pieces::WhiteKnight][1] = -4;
-		pieceSquareValues[Pieces::WhiteKnight][6] = -4;
+		pieceSquareValues[Pieces::WhiteKnight][1] = -40;
+		endgamePieceSquareValues[Pieces::WhiteKnight][1] = -40;
+		pieceSquareValues[Pieces::WhiteKnight][6] = -40;
+		endgamePieceSquareValues[Pieces::WhiteKnight][6] = -40;
 
-		pieceSquareValues[Pieces::BlackKnight][57] = 4;
-		pieceSquareValues[Pieces::BlackKnight][62] = 4;
+		pieceSquareValues[Pieces::BlackKnight][57] = 40;
+		endgamePieceSquareValues[Pieces::BlackKnight][57] = 40;
+		pieceSquareValues[Pieces::BlackKnight][62] = 40;
+		endgamePieceSquareValues[Pieces::BlackKnight][62] = 40;
 	}
 
 	void Evaluation::GenerateBishopValues(int color)
@@ -369,13 +412,18 @@ namespace SjelkjdChessEngine
 				value *= -1;
 			}
 			pieceSquareValues[6 * color + PieceTypes::Bishop][i] = value;
+			endgamePieceSquareValues[6 * color + PieceTypes::Bishop][i] = value;
 		}
 		// discourage camping
-		pieceSquareValues[Pieces::WhiteBishop][2] = -4;
-		pieceSquareValues[Pieces::WhiteBishop][5] = -4;
+		pieceSquareValues[Pieces::WhiteBishop][2] = -40;
+		endgamePieceSquareValues[Pieces::WhiteBishop][2] = -40;
+		pieceSquareValues[Pieces::WhiteBishop][5] = -40;
+		endgamePieceSquareValues[Pieces::WhiteBishop][5] = -40;
 
-		pieceSquareValues[Pieces::BlackBishop][58] = 4;
-		pieceSquareValues[Pieces::BlackBishop][61] = 4;
+		pieceSquareValues[Pieces::BlackBishop][58] = 40;
+		endgamePieceSquareValues[Pieces::BlackBishop][58] = 40;
+		pieceSquareValues[Pieces::BlackBishop][61] = 40;
+		endgamePieceSquareValues[Pieces::BlackBishop][61] = 40;
 	}
 
 	void Evaluation::GenerateRookValues(int color)
@@ -414,6 +462,7 @@ namespace SjelkjdChessEngine
 				value *= -1;
 			}
 			pieceSquareValues[6 * color + PieceTypes::Rook][i] = value;
+			endgamePieceSquareValues[6 * color + PieceTypes::Rook][i] = value;
 		}
 	}
 
@@ -447,6 +496,7 @@ namespace SjelkjdChessEngine
 				value *= -1;
 			}
 			pieceSquareValues[6 * color + PieceTypes::Queen][i] = value;
+			endgamePieceSquareValues[6 * color + PieceTypes::Queen][i] = value;
 		}
 	}
 
@@ -460,18 +510,24 @@ namespace SjelkjdChessEngine
 
 			int advance = color == Colors::White ? row : 7 - row;
 		
-			value = -2 * advance;
+			int dr = min(abs(row - 4), abs(row - 3));
+			int dc = min(abs(col - 4), abs(col - 3));
+			int endgameValue = 40 - (dr + dc) * 10;
+			value = -8 * advance;
 			if (color == Colors::Black)
 			{
 				value *= -1;
+				endgameValue *= -1;
 			}
-			pieceSquareValues[6 * color + PieceTypes::King][i] = 0;
-			endgamePieceSquareValues[6 * color + PieceTypes::King][i] = value;
+			pieceSquareValues[6 * color + PieceTypes::King][i] = value;
+			endgamePieceSquareValues[6 * color + PieceTypes::King][i] = endgameValue;
 		}
 	}
 
 	int Evaluation::GetScore()
 	{
+		if (IsDrawByMaterial()) return 0;
+
 		// game phase: 1 is middle game, 0 is endgame
 		int currentMaterial =	1 * BitCount(m_board.GetPieceTypeBitBoard(PieceTypes::Pawn)) +
 								3 * BitCount(m_board.GetPieceTypeBitBoard(PieceTypes::Knight) | m_board.GetPieceTypeBitBoard(PieceTypes::Bishop)) + 
@@ -492,6 +548,7 @@ namespace SjelkjdChessEngine
 		double lerp = phase / (double)total;
 
 		int pawn = GetPawnScore();
+		int pawnPush = CalculatePawnPushScore();
 
 		// must call mobility before king safety.
 		int mobility = CalculateMobility();
@@ -499,7 +556,16 @@ namespace SjelkjdChessEngine
 		int positional = int(m_board.GetPositionalScore() * lerp);
 		int positionalEndgame = int(m_board.GetEndgamePositionalScore() * (1 - lerp));
 		int material = m_board.GetMaterialScore();
-		return pawn + mobility + kingSafety + positional + positionalEndgame + material;
+		if (BitCount(m_board.GetPieceBitBoard(Pieces::WhiteBishop)) < 2)
+		{
+			material -= 50;
+		}
+		if (BitCount(m_board.GetPieceBitBoard(Pieces::BlackBishop)) < 2)
+		{
+			material += 50;
+		}
+
+		return pawn + pawnPush + mobility + kingSafety + positional + positionalEndgame + material;
 	}
 
 	void Evaluation::InitializeBlockers()
@@ -758,15 +824,6 @@ namespace SjelkjdChessEngine
 		blackKingAttackCount = 0;
 		int whiteMobilityScore = CalculateMobility(Colors::White);
 		int blackMobilityScore = CalculateMobility(Colors::Black);
-
-		if (BitCount(m_board.GetPieceBitBoard(Pieces::WhiteBishop)) < 2)
-		{
-			whiteMobilityScore -= 50;
-		}
-		if (BitCount(m_board.GetPieceBitBoard(Pieces::BlackBishop)) < 2)
-		{
-			blackMobilityScore -= 50;
-		}
 		return whiteMobilityScore - blackMobilityScore;
 	}
 
@@ -845,8 +902,10 @@ namespace SjelkjdChessEngine
 				}
 			}
 
+			/*
 			int multiplier = mobilityMultiplier[pieceCount];
 			int aMultiplier = attackCountMultiplier[pieceCount];
+
 			++myIndex;
 			ulong myPieces = m_board.pieceBitBoards[pieceCount] & allies;
 
@@ -870,72 +929,9 @@ namespace SjelkjdChessEngine
 						kingAttackCount += aMultiplier;
 					}
 				}
-				else // Generate pawn moves
-				{
-					// add in endgame piece table for pawns
-					if (endgame)
-					{
-						//pieceSquareScore += endgamePawnSquareValues[color, source];
-					}
-
-					// skip pawn moves
-					// NOTE - ADDING PAWN NON-CAPTURES WILL INTRODUCE A BUG IF MOBILITY IS USED FOR CHECK DETECTION.
-					//ulong alliedPawns = color == Colors.White ? whitePawnBitBoard : blackPawnBitBoard;
-					//ulong enemyPawns = color == Colors.Black ? whitePawnBitBoard : blackPawnBitBoard;
-					//ulong bitBoard = 1UL << source;
-					//ulong next = MakePawnMoveBitBoard(bitBoard, color);
-					//if ((next & (allies | enemies)) == 0)
-					//{
-					//    mobility |= next;
-					//    mobilityCount++;
-					//
-					//    // Initial double move
-					//    if ((bitBoard & alliedPawns) != 0)
-					//    {
-					//        next = MakePawnMoveBitBoard(next, color);
-					//        if ((next & (allies | enemies)) == 0)
-					//        {
-					//            mobility |= next;
-					//            mobilityCount++;
-					//        }
-					//    }
-					//}
-
-					// do pawn captures
-					// switch color
-					ulong pawnAttackBoard = MoveGenerator::pawnAttacks[source][1 - color] & pawnCaptureMask;
-					mobility |= pawnAttackBoard;
-					mobilityCount += BitCount(pawnAttackBoard);
-					if ((pawnAttackBoard & kingAttackBits) != 0)
-					{
-						kingAttackCount += aMultiplier;
-					}
-					
-					//int captureLeft = MakePawnCaptureMove(source, color, 0);
-					//ulong captureLeftBoard = 1UL << captureLeft;
-					//if ((captureLeftBoard & pawnCaptureMask) != 0)
-					//{
-					//    mobility |= captureLeftBoard;
-					//    mobilityCount++;
-					//    if ((captureLeftBoard & kingAttackBits) != 0)
-					//    {
-					//        kingAttackCount += aMultiplier;
-					//    }
-					//}
-				
-					//int captureRight = MakePawnCaptureMove(source, color, 1);
-					//ulong captureRightBoard = 1UL << captureRight;
-					//if ((captureRightBoard & pawnCaptureMask) != 0)
-					//{
-					//    mobility |= captureRightBoard;
-					//    mobilityCount++;
-					//    if ((captureRightBoard & kingAttackBits) != 0)
-					//    {
-					//        kingAttackCount += aMultiplier;
-					//    }
-					//}
-				}
 			}
+			*/
+			mobilityCount += CalculatePieceMobility(pieceCount, color, allies, notAllies, kingAttackBits, mobility, kingAttackCount);
 		}
 
 		int score = mobilityCount * 2;
@@ -951,5 +947,36 @@ namespace SjelkjdChessEngine
 		}
 
 		return score;
+	}
+
+	int Evaluation::CalculatePieceMobility(int pieceType, int color, ulong allies, ulong notAllies, ulong kingAttackBits, ulong& mobility, int& kingAttackCount)
+	{
+		int mobilityCount = 0;
+		int multiplier = mobilityMultiplier[pieceType];
+		int aMultiplier = attackCountMultiplier[pieceType];
+
+		//skip pawns
+		int piece = Pieces::GetPiece(pieceType, color);
+		ulong myPieces = m_board.pieceBitBoards[pieceType] & allies;
+
+		while (myPieces != 0)
+		{
+			int source = PopLowestSetBit(myPieces);
+
+			if (pieceType != PieceTypes::Pawn)
+			{
+				ulong attackMask = m_board.GetAttackMask(source, pieceType);
+				// we can't capture our own pieces.
+				attackMask &= notAllies;
+				mobilityCount += BitCount(attackMask) * multiplier;
+				mobility |= attackMask;
+
+				if ((attackMask & kingAttackBits) != 0)
+				{
+					kingAttackCount += aMultiplier;
+				}
+			}
+		}
+		return mobilityCount;
 	}
 }
