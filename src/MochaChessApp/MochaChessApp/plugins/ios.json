@@ -4,21 +4,13 @@
         "uninstalled": []
     },
     "config_munge": {
-        "files": {
-            "config.xml": {
-                "parents": {
-                    "/*": [
-                        {
-                            "xml": "<feature name=\"MochaChess\"><param name=\"ios-package\" value=\"MochaChessEngine\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        }
-                    ]
-                }
-            }
-        }
+        "files": {}
     },
     "installed_plugins": {
         "com.sjelkjd.MochaChess": {
+            "PACKAGE_NAME": "io.cordova.myapp46ff7e"
+        },
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "io.cordova.myapp46ff7e"
         }
     },

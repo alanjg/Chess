@@ -141,14 +141,14 @@
                     else {
                         var square = { row: r, col: c };
 
-                        if (this.engine.isValidMoveStart((result: boolean) => {
+                        this.engine.isValidMoveStart((result: boolean) => {
                             if (result) {
                                 this.hasPickedStartSquare = true;
                                 this.startRow = r;
                                 this.startCol = c;
                                 this.squares[r][c].classList.add('moveSource');
                             }
-                        }, () => { }, square));
+                        }, () => { }, square);
                     }
                 }
             }
