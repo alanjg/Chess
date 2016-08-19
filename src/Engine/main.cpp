@@ -211,8 +211,8 @@ int main(int argc,char** argv)
 	}
 	else
 	{
-	//	ConvertBestMove();
-	//	return 0;
+//		ConvertBestMove();
+//		return 0;
 		//PerfTHard();
 		//TestPinMask();
 	//	EndgameTableDatabase b;
@@ -253,6 +253,8 @@ int main(int argc,char** argv)
 		//TestBadMove1();
 		//PlaySelf();
 		//TestMobility();
-		TestDraw();
+		//TestDraw();
+		//PerfTHard();
+		PlaySelf();
 	}	
 }

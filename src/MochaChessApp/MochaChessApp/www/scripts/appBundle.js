@@ -245,8 +245,9 @@ var MochaChessApp;
 (function (MochaChessApp) {
     "use strict";
     var ChessGame = (function () {
-        function ChessGame(boardElement, playerColor) {
+        function ChessGame(boardElement, playerColor, onGameOver) {
             var _this = this;
+            this.onGameOver = onGameOver;
             this.board = new MochaChessApp.Board(boardElement);
             this.board.setupBoard(playerColor);
             this.board.engine.setStartPosition(function () { }, function () { });
@@ -415,12 +416,21 @@ var MochaChessApp;
             mochaChessApp.controller('playComputerController', function ($scope, PlayerData) {
                 $scope.player = PlayerData;
                 $scope.$on('$includeContentLoaded', function () {
-                    var game = new MochaChessApp.ChessGame(document.getElementById('board'), $scope.player.color == "white" ? MochaChessApp.Color.White : MochaChessApp.Color.Black);
+                    var game = new MochaChessApp.ChessGame(document.getElementById('board'), $scope.player.color == "white" ? MochaChessApp.Color.White : MochaChessApp.Color.Black, function () {
+                        //on game over
+                    });
                 });
             });
             mochaChessApp.controller('solveProblemController', function ($scope, $http, $location) {
-                var problemIndex = 0;
                 var setupSolver = function () {
+                    var problemIndex = window.localStorage.getItem('problemIndex');
+                    if (problemIndex == null) {
+                        problemIndex = 0;
+                        window.localStorage.setItem('problemIndex', "0");
+                    }
+                    else {
+                        problemIndex = parseInt(problemIndex);
+                    }
                     Application.chessProblemSolver = new MochaChessApp.ChessProblemSolver(Application.problemList.getProblem(problemIndex), document.getElementById('board'));
                 };
                 var solveProblem = function () {
@@ -463,7 +473,9 @@ var MochaChessApp;
                 };
                 $scope.clickNext = function () {
                     Application.chessProblemSolver.board.teardownBoard();
+                    var problemIndex = parseInt(window.localStorage.getItem('problemIndex'));
                     problemIndex++;
+                    window.localStorage.setItem('problemIndex', problemIndex.toString());
                     $scope.showCorrect = false;
                     $scope.showWrong = false;
                     $scope.showNext = false;
