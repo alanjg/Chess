@@ -1,16 +1,6 @@
 var MochaChessApp;
 (function (MochaChessApp) {
     "use strict";
-    var Move = (function () {
-        function Move() {
-        }
-        return Move;
-    })();
-    MochaChessApp.Move = Move;
-})(MochaChessApp || (MochaChessApp = {}));
-var MochaChessApp;
-(function (MochaChessApp) {
-    "use strict";
     var Board = (function () {
         function Board(boardElement) {
             this.hasTouch = false;
@@ -134,15 +124,14 @@ var MochaChessApp;
                     }
                     else {
                         var square = { row: r, col: c };
-                        if (this.engine.isValidMoveStart(function (result) {
+                        this.engine.isValidMoveStart(function (result) {
                             if (result) {
                                 _this.hasPickedStartSquare = true;
                                 _this.startRow = r;
                                 _this.startCol = c;
                                 _this.squares[r][c].classList.add('moveSource');
                             }
-                        }, function () { }, square))
-                            ;
+                        }, function () { }, square);
                     }
                 }
             }
@@ -219,7 +208,7 @@ var MochaChessApp;
             }, function () { });
         };
         return Board;
-    })();
+    }());
     MochaChessApp.Board = Board;
 })(MochaChessApp || (MochaChessApp = {}));
 var MochaChessApp;
@@ -234,11 +223,21 @@ var MochaChessApp;
 var MochaChessApp;
 (function (MochaChessApp) {
     "use strict";
+    var Move = (function () {
+        function Move() {
+        }
+        return Move;
+    }());
+    MochaChessApp.Move = Move;
+})(MochaChessApp || (MochaChessApp = {}));
+var MochaChessApp;
+(function (MochaChessApp) {
+    "use strict";
     var Position = (function () {
         function Position() {
         }
         return Position;
-    })();
+    }());
     MochaChessApp.Position = Position;
 })(MochaChessApp || (MochaChessApp = {}));
 var MochaChessApp;
@@ -275,7 +274,7 @@ var MochaChessApp;
             }, 0);
         };
         return ChessGame;
-    })();
+    }());
     MochaChessApp.ChessGame = ChessGame;
 })(MochaChessApp || (MochaChessApp = {}));
 /// <reference path="../plugins/com.sjelkjd.MochaChess/www/MochaChess.d.ts" />
@@ -310,7 +309,7 @@ var MochaChessApp;
             return problem;
         };
         return ChessProblemList;
-    })();
+    }());
     MochaChessApp.ChessProblemList = ChessProblemList;
     var ChessProblem = (function () {
         function ChessProblem(fen, color, expectedMove) {
@@ -319,7 +318,7 @@ var MochaChessApp;
             this.expectedMove = expectedMove;
         }
         return ChessProblem;
-    })();
+    }());
     MochaChessApp.ChessProblem = ChessProblem;
     var ChessProblemSolver = (function () {
         function ChessProblemSolver(problem, boardElement) {
@@ -357,7 +356,7 @@ var MochaChessApp;
             }
         };
         return ChessProblemSolver;
-    })();
+    }());
     MochaChessApp.ChessProblemSolver = ChessProblemSolver;
 })(MochaChessApp || (MochaChessApp = {}));
 // For an introduction to the Blank template, see the following documentation:
