@@ -80,13 +80,14 @@ module MochaChessApp {
 
             mochaChessApp.controller('solveProblemController', function ($scope, $http, $location) {
                 var setupSolver = function () {
-                    var problemIndex = window.localStorage.getItem('problemIndex');
-                    if (problemIndex == null) {
+                    var problemIndexStr = window.localStorage.getItem('problemIndex');
+                    var problemIndex: number;
+                    if (problemIndexStr == null) {
                         problemIndex = 0;
                         window.localStorage.setItem('problemIndex', "0");
                     }
                     else {
-                        problemIndex = parseInt(problemIndex);
+                        problemIndex = parseInt(problemIndexStr);
                     }
                     Application.chessProblemSolver = new ChessProblemSolver(Application.problemList.getProblem(problemIndex), document.getElementById('board'));
                 };

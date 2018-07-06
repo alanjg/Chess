@@ -214,11 +214,11 @@ var MochaChessApp;
 var MochaChessApp;
 (function (MochaChessApp) {
     "use strict";
+    var Color;
     (function (Color) {
         Color[Color["White"] = 0] = "White";
         Color[Color["Black"] = 1] = "Black";
-    })(MochaChessApp.Color || (MochaChessApp.Color = {}));
-    var Color = MochaChessApp.Color;
+    })(Color = MochaChessApp.Color || (MochaChessApp.Color = {}));
 })(MochaChessApp || (MochaChessApp = {}));
 var MochaChessApp;
 (function (MochaChessApp) {
@@ -422,13 +422,14 @@ var MochaChessApp;
             });
             mochaChessApp.controller('solveProblemController', function ($scope, $http, $location) {
                 var setupSolver = function () {
-                    var problemIndex = window.localStorage.getItem('problemIndex');
-                    if (problemIndex == null) {
+                    var problemIndexStr = window.localStorage.getItem('problemIndex');
+                    var problemIndex;
+                    if (problemIndexStr == null) {
                         problemIndex = 0;
                         window.localStorage.setItem('problemIndex', "0");
                     }
                     else {
-                        problemIndex = parseInt(problemIndex);
+                        problemIndex = parseInt(problemIndexStr);
                     }
                     Application.chessProblemSolver = new MochaChessApp.ChessProblemSolver(Application.problemList.getProblem(problemIndex), document.getElementById('board'));
                 };
