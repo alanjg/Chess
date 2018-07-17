@@ -27,6 +27,7 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 	std::ifstream in(meshFile);
 	std::string word;
 	in >> word;
+	MaterialData materialData;
 	if (word != "Material")
 	{
 		return false;
@@ -34,24 +35,15 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 	in >> word;
 	Texture* texture;
 	uint32_t dcolor = 0xff202050, scolor = 0xff202050;
+	uint8_t spower = 0;
 	if (word == "Diffuse")
 	{
-		double d1, d2, d3, d4;
-		in >> d1 >> d2 >> d3 >> d4;
-		dcolor = (((uint32_t)(d4 * 255)) << 24) +
-			(((uint32_t)(d1 * 255)) << 16) +
-			(((uint32_t)(d2 * 255)) << 8) +
-			(((uint32_t)(d3 * 255)) << 0);
+		in >> materialData.diffuse.x >> materialData.diffuse.y >> materialData.diffuse.z >> materialData.diffuse.w;
 		in >> word;
 	}
 	if (word == "Specular")
 	{
-		double s1, s2, s3, s4, sp;
-		in >> s1 >> s2 >> s3 >> s4 >> sp;
-		scolor = (((uint32_t)(s4 * 255)) << 24) +
-			(((uint32_t)(s1 * 255)) << 16) +
-			(((uint32_t)(s2 * 255)) << 8) +
-			(((uint32_t)(s3 * 255)) << 0);
+		in >> materialData.specular.x >> materialData.specular.y >> materialData.specular.z >> materialData.specular.w >> materialData.specPower;
 		in >> word;
 	}
 	
@@ -119,16 +111,16 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 		tu.push_back(vx);
 		tv.push_back(vy);
 	}
+	for (unsigned int i = 0; i < vvx.size(); i++)
+	{
+		triangleSet->SetVertex(Vertex(XMFLOAT3(vvx[i], vvy[i], vvz[i]), dcolor, tu[i], tv[i]), i);
+	}
 	for (unsigned int i = 0; i < indexes.size(); i += 3)
 	{
-		Vertex v1(XMFLOAT3(vvx[indexes[i]], vvy[indexes[i]], vvz[indexes[i]]), dcolor, tu[i], tv[i]);
-		Vertex v2(XMFLOAT3(vvx[indexes[i+1]], vvy[indexes[i+1]], vvz[indexes[i+1]]), dcolor, tu[i+1], tv[i+1]);
-		Vertex v3(XMFLOAT3(vvx[indexes[i+2]], vvy[indexes[i+2]], vvz[indexes[i+2]]), dcolor, tu[i+2], tv[i+2]);
-
-		triangleSet->AddTriangle(v1, v2, v3);
+		triangleSet->AddIndexedTriangle(indexes[i], indexes[i+1], indexes[i+2]);
 	}
 	
-	shared_ptr<Material> material(new Material(texture));
+	shared_ptr<Material> material(new Material(texture, &materialData));
 	Model* model = new Model(triangleSet, pos, rot, material);
 	return model;
 }

@@ -4,78 +4,42 @@
 #include "DirectX11.h"
 #include "COMHelpers.h"
 
-Material::Material(Texture * t, uint32_t flags , D3D11_INPUT_ELEMENT_DESC * vertexDesc, int numVertexDesc,
-	char* vertexShader, char* pixelShader, int vSize) 
-	: Tex(t), VertexSize(vSize)
+MaterialData::MaterialData()
 {
-	D3D11_INPUT_ELEMENT_DESC defaultVertexDesc[] = {
+	ambient.x = ambient.y = ambient.z = 0.0;
+	ambient.w = 1.0;
+	diffuse.x = diffuse.y = diffuse.z = diffuse.w = 1.0;
+	specular.x = specular.y = specular.z = specular.w = 1.0;
+	specPower = 0;
+}
+
+Material::Material(Texture * t, MaterialData* materialData)
+	: Tex(t)
+{
+	uint32_t flags = MAT_WRAP | MAT_TRANS;
+	int numVertexDesc = 4;
+	
+	VertexSize = 36; 
+
+	D3D11_INPUT_ELEMENT_DESC vertexDesc[] = {
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "Color",    0, DXGI_FORMAT_B8G8R8A8_UNORM,  0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }, };
-
-	// Use defaults if no shaders specified
-	const char* defaultVertexShaderSrc =
-		"float4x4 ProjView;  float4 MasterCol;"
-		"void main(in  float4 Position  : POSITION,    in  float4 Color : COLOR0, in  float2 TexCoord  : TEXCOORD0,"
-		"          out float4 oPosition : SV_Position, out float4 oColor: COLOR0, out float2 oTexCoord : TEXCOORD0)"
-		"{   oPosition = mul(ProjView, Position); oTexCoord = TexCoord; "
-		"    oColor = MasterCol * Color; }";
-	const char* defaultPixelShaderSrc =
-		"Texture2D Texture   : register(t0); SamplerState Linear : register(s0); "
-		"float4 main(in float4 Position : SV_Position, in float4 Color: COLOR0, in float2 TexCoord : TEXCOORD0) : SV_Target"
-		"{   float4 TexCol = Texture.Sample(Linear, TexCoord); "
-		"    if (TexCol.a==0) clip(-1); " // If alpha = 0, don't draw
-		"    return(Color * TexCol); }";
-
-	// vertex shader for instanced stereo
-	const char* instancedStereoVertexShaderSrc =
-		"float4x4 modelViewProj[2];  float4 MasterCol;"
-		"void main(in  float4 Position  : POSITION,    in  float4 Color : COLOR0, in  float2 TexCoord  : TEXCOORD0,"
-		"          in  uint instanceID : SV_InstanceID, "
-		"          out float4 oPosition : SV_Position, out float4 oColor: COLOR0, out float2 oTexCoord : TEXCOORD0,"
-		"          out float oClipDist : SV_ClipDistance0, out float oCullDist : SV_CullDistance0)"
-		"{"
-		"   const float4 EyeClipPlane[2] = { { -1, 0, 0, 0 }, { 1, 0, 0, 0 } };"
-		"   uint eyeIndex = instanceID & 1;"
-		// transform to clip space for correct eye (includes offset and scale)
-		"   oPosition = mul(modelViewProj[eyeIndex], Position); "
-		// calculate distance from left/right clip plane (try setting to 0 to see why clipping is necessary)
-		"   oCullDist = oClipDist = dot(EyeClipPlane[eyeIndex], oPosition);"
-		"   oTexCoord = TexCoord; "
-		"   oColor = MasterCol * Color;"
-		"}";
-
-	const char* vertexShaderString;
-	const char* pixelShaderString;
-	if (!vertexDesc)   vertexDesc = defaultVertexDesc;
-
-	if (!vertexShader)
-	{
-		vertexShaderString = defaultVertexShaderSrc;
-	}
-	else
-	{
-		vertexShaderString = vertexShader;
-	}
-
-	if (!pixelShader)
-	{
-		pixelShaderString = defaultPixelShaderSrc;
-	}
-	else
-	{
-		pixelShaderString = pixelShader;
-	}
+		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Color",    0, DXGI_FORMAT_B8G8R8A8_UNORM,  0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 }, 
+	};
 
 	// Create vertex shader
 	ID3DBlob * blobData;
 	ID3DBlob * errorBlob = nullptr;
-	HRESULT result = D3DCompile(vertexShaderString, strlen(vertexShaderString), 0, 0, 0, "main", "vs_4_0", 0, 0, &blobData, &errorBlob);
+
+	
+	HRESULT result = D3DCompileFromFile(L"PieceVertexShader.hlsl", NULL, NULL, "main", "vs_5_0", 0, 0, &blobData, &errorBlob);
 	if (FAILED(result))
 	{
 		MessageBoxA(nullptr, (char *)errorBlob->GetBufferPointer(), "Error compiling vertex shader", MB_OK);
 		exit(-1);
 	}
+
 	DIRECTX.Device->CreateVertexShader(blobData->GetBufferPointer(), blobData->GetBufferSize(), nullptr, &VertexShader);
 
 	// Create input layout
@@ -84,17 +48,24 @@ Material::Material(Texture * t, uint32_t flags , D3D11_INPUT_ELEMENT_DESC * vert
 	blobData->Release();
 
 	// Create vertex shader for instancing
-	result = D3DCompile(instancedStereoVertexShaderSrc, strlen(instancedStereoVertexShaderSrc), 0, 0, 0, "main", "vs_4_0", 0, 0, &blobData, &errorBlob);
+	result = D3DCompileFromFile(L"InstancedPieceVertexShader.hlsl", NULL, NULL, "main", "vs_5_0", 0, 0, &blobData, &errorBlob);
 	if (FAILED(result))
 	{
 		MessageBoxA(nullptr, (char *)errorBlob->GetBufferPointer(), "Error compiling vertex shader", MB_OK);
 		exit(-1);
 	}
+
 	DIRECTX.Device->CreateVertexShader(blobData->GetBufferPointer(), blobData->GetBufferSize(), nullptr, &VertexShaderInstanced);
 	blobData->Release();
 
 	// Create pixel shader
-	D3DCompile(pixelShaderString, strlen(pixelShaderString), 0, 0, 0, "main", "ps_4_0", 0, 0, &blobData, 0);
+	result = D3DCompileFromFile(L"PiecePixelShader.hlsl", NULL, NULL, "main", "ps_5_0", 0, 0, &blobData, &errorBlob);
+	if (FAILED(result))
+	{
+		MessageBoxA(nullptr, (char *)errorBlob->GetBufferPointer(), "Error compiling pixel shader", MB_OK);
+		exit(-1);
+	}
+
 	DIRECTX.Device->CreatePixelShader(blobData->GetBufferPointer(), blobData->GetBufferSize(), nullptr, &PixelShader);
 	blobData->Release();
 
@@ -130,7 +101,18 @@ Material::Material(Texture * t, uint32_t flags , D3D11_INPUT_ELEMENT_DESC * vert
 	bm.RenderTarget[0].DestBlend = bm.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
 	bm.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	DIRECTX.Device->CreateBlendState(&bm, &BlendState);
+
+	if (materialData == nullptr)
+	{
+		m_materialData.reset(new MaterialData());
+	}
+	else
+	{
+		m_materialData.reset(new MaterialData(*materialData));
+	}
+	materialBuffer.reset(new DataBuffer(DIRECTX.Device, D3D11_BIND_CONSTANT_BUFFER, &m_materialData, sizeof(MaterialData)));
 }
+
 Material::~Material()
 {
 	Release(VertexShader);

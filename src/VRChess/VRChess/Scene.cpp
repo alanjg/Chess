@@ -3,11 +3,11 @@
 #include "MeshLoader.h"
 #include "Engine/Types.h"
 
-void Scene::Render(XMMATRIX * projView)
+void Scene::Render(XMMATRIX * proj, XMMATRIX * view)
 {
 	for (auto i = Models.begin(); i != Models.end(); i++)
 	{
-		(*i)->Render(projView);
+		(*i)->Render(proj, view);
 	}
 
 	switch (gameState)
@@ -15,11 +15,11 @@ void Scene::Render(XMMATRIX * projView)
 	case GameOver:
 		break;
 	case PlayerMoving:
-		sourceSquare->Render(projView);
+		sourceSquare->Render(proj, view);
 		break;
 	case PlayerPickingTargetSquare:
-		sourceSquare->Render(projView);
-		targetSquare->Render(projView);
+		sourceSquare->Render(proj, view);
+		targetSquare->Render(proj, view);
 		break;
 	case PlayerPickingPromotionType:
 		break;
@@ -27,7 +27,7 @@ void Scene::Render(XMMATRIX * projView)
 		break;
 	}
 
-	board->Render(projView);
+	board->Render(proj, view);
 	for (int i = 0; i < 64; i++)
 	{
 		int piece = gameBoard->GetPiece(i);
@@ -36,7 +36,7 @@ void Scene::Render(XMMATRIX * projView)
 			Model& model = *pieceModels[piece];
 			model.Pos.x = GetRow(i) + 0.5f;
 			model.Pos.z = GetCol(i) + 0.5f;
-			model.Render(projView);
+			model.Render(proj, view);
 		}
 	}
 }
@@ -253,6 +253,14 @@ void Scene::HandlePointerClick(XMFLOAT3& origin, XMFLOAT3& direction, XMMATRIX& 
 				}
 
 			}
+			else
+			{
+				gameState = PlayerMoving;
+			}
+		}
+		else
+		{
+			gameState = PlayerMoving;
 		}
 		break;
 	}

@@ -10,7 +10,9 @@ DataBuffer::DataBuffer(ID3D11Device * Device, D3D11_BIND_FLAG use, const void* b
 	desc.Usage = D3D11_USAGE_DYNAMIC;
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	desc.BindFlags = use;
-	desc.ByteWidth = (unsigned)size;
+
+	// round up to next 16 bytes
+	desc.ByteWidth = (unsigned)(((size / 16) * 16) + (((size % 16) != 0) ? 16 : 0));
 	D3D11_SUBRESOURCE_DATA sr;
 	sr.pSysMem = buffer;
 	sr.SysMemPitch = sr.SysMemSlicePitch = 0;

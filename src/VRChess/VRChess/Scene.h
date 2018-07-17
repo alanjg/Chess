@@ -40,7 +40,7 @@ private:
 public:	
 	Scene();
 
-	void Render(XMMATRIX * projView);
+	void Render(XMMATRIX * proj, XMMATRIX * view);
 
 	void RenderInstanced(XMMATRIX * projViews);
 	

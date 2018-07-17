@@ -1,5 +1,16 @@
 #pragma once
 #include "GeneratedTexture.h"
+#include "DataBuffer.h"
+
+struct MaterialData
+{
+	XMFLOAT4 ambient;
+	XMFLOAT4 diffuse;
+	XMFLOAT4 specular;
+	float specPower;
+	MaterialData();
+};
+
 struct Material
 {
 	ID3D11VertexShader      * VertexShader, *VertexShaderInstanced;
@@ -11,12 +22,11 @@ struct Material
 	ID3D11RasterizerState   * Rasterizer;
 	ID3D11DepthStencilState * DepthState;
 	ID3D11BlendState        * BlendState;
-
+	unique_ptr<DataBuffer> materialBuffer;
+	unique_ptr<MaterialData> m_materialData;
 	enum { MAT_WRAP = 1, MAT_WIRE = 2, MAT_ZALWAYS = 4, MAT_NOCULL = 8, MAT_TRANS = 16 };
 
 public:
-	Material(Texture * t, uint32_t flags = MAT_WRAP | MAT_TRANS, D3D11_INPUT_ELEMENT_DESC * vertexDesc = nullptr, int numVertexDesc = 3,
-		char* vertexShader = nullptr, char* pixelShader = nullptr, int vSize = 24);
-
+	Material(Texture * t, MaterialData* materialData = nullptr);
 	~Material();
 };

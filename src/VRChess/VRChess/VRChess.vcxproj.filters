@@ -238,4 +238,15 @@
       <Filter>Models</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PieceVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="InstancedPieceVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="PiecePixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

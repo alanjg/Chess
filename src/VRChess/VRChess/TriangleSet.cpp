@@ -33,7 +33,8 @@ void TriangleSet::update()
 		_aligned_free(_indices);
 	}
 	_vertices = (Vertex *)_aligned_malloc(verts.size() * sizeof(Vertex), 16);
-	_indices = (short *)_aligned_malloc(ind.size() * sizeof(short), 16);
+	_indices = (int *)_aligned_malloc(ind.size() * sizeof(int), 16);
+	calcNormals();
 	for (unsigned int i = 0; i < verts.size(); i++)
 	{
 		_vertices[i] = verts[i];
@@ -41,6 +42,43 @@ void TriangleSet::update()
 	for (unsigned int i = 0; i < ind.size(); i++)
 	{
 		_indices[i] = ind[i];
+	}
+}
+
+void TriangleSet::calcNormals()
+{
+	vector<vector<XMFLOAT3>> normals(verts.size());
+	for (unsigned int i = 0; i < ind.size(); i += 3)
+	{
+		XMVECTOR p1 = XMLoadFloat3(&verts[ind[i + 0]].Pos);
+		XMVECTOR p2 = XMLoadFloat3(&verts[ind[i + 1]].Pos);
+		XMVECTOR p3 = XMLoadFloat3(&verts[ind[i + 2]].Pos);
+		XMVECTOR normal = XMVector3Cross(p1 - p2, p1 - p3);
+		XMVECTOR norm = XMVector3Normalize(normal);
+		XMFLOAT3 normf;
+		XMStoreFloat3(&normf, norm);
+		normals[ind[i + 0]].push_back(normf);
+		normals[ind[i + 1]].push_back(normf);
+		normals[ind[i + 2]].push_back(normf);
+	}
+	for (unsigned int i = 0; i < normals.size();i++)
+	{
+		XMVECTOR acc = XMVectorSet(0, 0, 0, 0);
+		float count = 0;
+		for (unsigned int j=0;j<normals[i].size(); j++)
+		{			
+			acc = XMVectorAdd(acc, XMLoadFloat3(&normals[i][j]));
+			count += 1.0f;
+		}
+		if (count > 0.0f)
+		{
+			XMVECTOR res = XMVectorDivide(acc, XMVectorSet(count, count, count, 1.0));
+			XMStoreFloat3(&verts[i].Norm, XMVector3Normalize(res));
+		}
+		else
+		{
+			XMStoreFloat3(&verts[i].Norm, acc);
+		}
 	}
 }
 
@@ -58,7 +96,8 @@ Vertex* TriangleSet::Vertices()
 	}
 	return _vertices;
 }
-short* TriangleSet::Indices()
+
+int* TriangleSet::Indices()
 {
 	if (changed)
 	{
@@ -76,10 +115,25 @@ void TriangleSet::AddQuad(Vertex v0, Vertex v1, Vertex v2, Vertex v3)
 
 void TriangleSet::AddTriangle(Vertex v0, Vertex v1, Vertex v2)
 {
-	for (int i = 0; i < 3; i++) ind.push_back(short(verts.size() + i));
+	for (int i = 0; i < 3; i++) ind.push_back(verts.size() + i);
 	verts.push_back(v0);
 	verts.push_back(v1);
 	verts.push_back(v2);
+	changed = true;
+}
+
+void TriangleSet::SetVertex(Vertex v0, unsigned int index)
+{
+	if (index >= verts.size()) verts.resize(index + 1);
+	verts[index] = v0;
+	changed = true;
+}
+
+void TriangleSet::AddIndexedTriangle(int v0, int v1, int v2)
+{
+	ind.push_back(v0);
+	ind.push_back(v1);
+	ind.push_back(v2);
 	changed = true;
 }
 

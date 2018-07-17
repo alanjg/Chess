@@ -2,6 +2,17 @@
 #include "DepthBuffer.h"
 #include "DataBuffer.h"
 
+struct PixelShaderConstantBufferData
+{
+	XMFLOAT3 eyePos;
+	XMFLOAT3 lightDir;
+};
+
+struct VertexShaderConstantBufferData
+{
+	XMMATRIX modelViewProj;
+};
+
 struct DirectX11
 {
 	HWND                     Window;
@@ -19,6 +30,7 @@ struct DirectX11
 	static const int         UNIFORM_DATA_SIZE = 2000;
 	unsigned char            UniformData[UNIFORM_DATA_SIZE];
 	DataBuffer             * UniformBufferGen;
+	DataBuffer				*PixelShaderConstantBuffer;
 	HINSTANCE                hInstance;
 public:
 	DirectX11();
@@ -33,7 +45,6 @@ public:
 	bool HandleMessages(void);
 	void Run(bool(*MainLoop)(bool retryCreate));
 	void ReleaseDevice();
-
 };
 
 extern DirectX11 DIRECTX;

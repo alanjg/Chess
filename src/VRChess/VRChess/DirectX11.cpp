@@ -151,6 +151,10 @@ bool DirectX11::InitDevice(int vpW, int vpH, const LUID* pLuid, bool windowed, i
 	ID3D11Buffer* constantBuffer = UniformBufferGen->GetBuffer();
 	Context->VSSetConstantBuffers(0, 1, &constantBuffer);
 
+	PixelShaderConstantBuffer = new DataBuffer(Device, D3D11_BIND_CONSTANT_BUFFER, nullptr, sizeof(XMFLOAT3));
+	ID3D11Buffer* psConstantBuffer = PixelShaderConstantBuffer->GetBuffer();
+	Context->PSSetConstantBuffers(0, 1, &psConstantBuffer);
+
 	// Set max frame latency to 1
 	IDXGIDevice1* DXGIDevice1 = nullptr;
 	hr = Device->QueryInterface(__uuidof(IDXGIDevice1), (void**)&DXGIDevice1);
