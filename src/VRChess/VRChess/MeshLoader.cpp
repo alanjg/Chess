@@ -34,11 +34,13 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 	}
 	in >> word;
 	Texture* texture;
-	uint32_t dcolor = 0xff202050, scolor = 0xff202050;
+	//uint32_t dcolor = 0xff202050, scolor = 0xff202050;
+	uint32_t dcolor = 0xffffffff, scolor = 0xffffffff;
 	uint8_t spower = 0;
 	if (word == "Diffuse")
 	{
 		in >> materialData.diffuse.x >> materialData.diffuse.y >> materialData.diffuse.z >> materialData.diffuse.w;
+		materialData.ambient = materialData.diffuse;
 		in >> word;
 	}
 	if (word == "Specular")

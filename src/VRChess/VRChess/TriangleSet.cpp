@@ -53,7 +53,7 @@ void TriangleSet::calcNormals()
 		XMVECTOR p1 = XMLoadFloat3(&verts[ind[i + 0]].Pos);
 		XMVECTOR p2 = XMLoadFloat3(&verts[ind[i + 1]].Pos);
 		XMVECTOR p3 = XMLoadFloat3(&verts[ind[i + 2]].Pos);
-		XMVECTOR normal = XMVector3Cross(p1 - p2, p1 - p3);
+		XMVECTOR normal = XMVector3Cross(p1 - p3, p1 - p2);
 		XMVECTOR norm = XMVector3Normalize(normal);
 		XMFLOAT3 normf;
 		XMStoreFloat3(&normf, norm);

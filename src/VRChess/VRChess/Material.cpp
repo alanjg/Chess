@@ -6,7 +6,7 @@
 
 MaterialData::MaterialData()
 {
-	ambient.x = ambient.y = ambient.z = 0.0;
+	ambient.x = ambient.y = ambient.z = 1.0;
 	ambient.w = 1.0;
 	diffuse.x = diffuse.y = diffuse.z = diffuse.w = 1.0;
 	specular.x = specular.y = specular.z = specular.w = 1.0;
@@ -17,6 +17,7 @@ Material::Material(Texture * t, MaterialData* materialData)
 	: Tex(t)
 {
 	uint32_t flags = MAT_WRAP | MAT_TRANS;
+	//uint32_t flags = MAT_WRAP | MAT_TRANS | MAT_WIRE;
 	int numVertexDesc = 4;
 	
 	VertexSize = 36; 
@@ -102,15 +103,17 @@ Material::Material(Texture * t, MaterialData* materialData)
 	bm.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	DIRECTX.Device->CreateBlendState(&bm, &BlendState);
 
-	if (materialData == nullptr)
+	m_materialData = (MaterialData*)_aligned_malloc(sizeof(MaterialData), 16);
+	if (materialData != nullptr)
 	{
-		m_materialData.reset(new MaterialData());
+		memcpy(m_materialData, materialData, sizeof(MaterialData));
 	}
 	else
 	{
-		m_materialData.reset(new MaterialData(*materialData));
+		MaterialData blank;
+		memcpy(m_materialData, &blank, sizeof(MaterialData));
 	}
-	materialBuffer.reset(new DataBuffer(DIRECTX.Device, D3D11_BIND_CONSTANT_BUFFER, &m_materialData, sizeof(MaterialData)));
+	materialBuffer.reset(new DataBuffer(DIRECTX.Device, D3D11_BIND_CONSTANT_BUFFER, m_materialData, sizeof(MaterialData)));
 }
 
 Material::~Material()
@@ -125,4 +128,5 @@ Material::~Material()
 	Release(Rasterizer);
 	Release(DepthState);
 	Release(BlendState);
+	_aligned_free(m_materialData);
 }

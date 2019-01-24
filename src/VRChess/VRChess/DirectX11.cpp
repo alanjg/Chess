@@ -151,7 +151,7 @@ bool DirectX11::InitDevice(int vpW, int vpH, const LUID* pLuid, bool windowed, i
 	ID3D11Buffer* constantBuffer = UniformBufferGen->GetBuffer();
 	Context->VSSetConstantBuffers(0, 1, &constantBuffer);
 
-	PixelShaderConstantBuffer = new DataBuffer(Device, D3D11_BIND_CONSTANT_BUFFER, nullptr, sizeof(XMFLOAT3));
+	PixelShaderConstantBuffer = new DataBuffer(Device, D3D11_BIND_CONSTANT_BUFFER, nullptr, sizeof(PixelShaderLightData));
 	ID3D11Buffer* psConstantBuffer = PixelShaderConstantBuffer->GetBuffer();
 	Context->PSSetConstantBuffers(0, 1, &psConstantBuffer);
 

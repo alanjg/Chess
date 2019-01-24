@@ -2,10 +2,13 @@
 #include "DepthBuffer.h"
 #include "DataBuffer.h"
 
-struct PixelShaderConstantBufferData
+struct PixelShaderLightData
 {
-	XMFLOAT3 eyePos;
-	XMFLOAT3 lightDir;
+	XMFLOAT3A eyePos;
+	XMFLOAT3A lightDir;
+	XMFLOAT4A ambientLight;
+	XMFLOAT4A diffuseLight;
+	XMFLOAT4A specularLight;
 };
 
 struct VertexShaderConstantBufferData

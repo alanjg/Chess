@@ -32,12 +32,12 @@ void Model::Render(XMMATRIX * proj, XMMATRIX* view)
 	XMMATRIX viewInvTranspose = XMMatrixTranspose(modelViewInv);
 	XMMATRIX modelInvTranspose = XMMatrixTranspose(modelInv);
 	XMMATRIX modelViewProj = XMMatrixMultiply(modelView, *proj);
-
+	
 	float col[] = { 1, 1, 1, 1 };
 	
 	memcpy(DIRECTX.UniformData + 0, &modelViewProj, 64); // ProjView
-	memcpy(DIRECTX.UniformData + 64, &modelMat, 64); // View
-	memcpy(DIRECTX.UniformData + 64+64, &modelInvTranspose, 64); // ViewInvTranspose
+	memcpy(DIRECTX.UniformData + 64, &modelMat, 64); // World
+	memcpy(DIRECTX.UniformData + 64+64, &modelInvTranspose, 64); // WorldInvTranspose
 	memcpy(DIRECTX.UniformData + 64+64+64, &col, 16); // MasterCol
 
 	D3D11_MAPPED_SUBRESOURCE map;
@@ -50,7 +50,7 @@ void Model::Render(XMMATRIX * proj, XMMATRIX* view)
 	ID3D11Buffer* vertexBuffer = m_vertexBuffer->GetBuffer();
 	ID3D11Buffer* constantBuffer = m_fill->materialBuffer->GetBuffer();
 	ID3D11Buffer* globalConstantBuffer = DIRECTX.PixelShaderConstantBuffer->GetBuffer();
-	//DIRECTX.Context->PSSetConstantBuffers(0, 1, &globalConstantBuffer);
+	DIRECTX.Context->PSSetConstantBuffers(0, 1, &globalConstantBuffer);
 	DIRECTX.Context->PSSetConstantBuffers(1, 1, &constantBuffer);
 
 	DIRECTX.Context->IASetVertexBuffers(0, 1, &vertexBuffer, &m_fill->VertexSize, &offset);
@@ -90,9 +90,9 @@ void Model::RenderInstanced(XMMATRIX *viewProjMats)
 	ID3D11Buffer* vertexBuffer = m_vertexBuffer->GetBuffer();
 	ID3D11Buffer* constantBuffer = m_fill->materialBuffer->GetBuffer();
 	ID3D11Buffer* globalConstantBuffer = DIRECTX.PixelShaderConstantBuffer->GetBuffer();
-	//DIRECTX.Context->PSSetConstantBuffers(0, 1, &globalConstantBuffer);
-
+	DIRECTX.Context->PSSetConstantBuffers(0, 1, &globalConstantBuffer);
 	DIRECTX.Context->PSSetConstantBuffers(1, 1, &constantBuffer);
+
 	DIRECTX.Context->IASetVertexBuffers(0, 1, &vertexBuffer, &m_fill->VertexSize, &offset);
 	DIRECTX.Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DIRECTX.Context->VSSetShader(m_fill->VertexShaderInstanced, nullptr, 0);
