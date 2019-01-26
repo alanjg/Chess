@@ -161,7 +161,9 @@ namespace SjelkjdChessEngine
 		void ScoreMovesExpensive(vector<int>& moves, int firstMove, int killer1, int killer2, vector<int>& moveValueList);
 		void ScoreMoves(vector<int>& moves, int firstMove, int killer1, int killer2, vector<int>& moveValueList);
 		void SortMoves(vector<int>& moves, int firstMove, int killer1, int killer2, vector<int>& moveValueList);
-
+		
+		// Used to stop the search from another thread
+		void SetTimeExceeded();
 	};
 }
 

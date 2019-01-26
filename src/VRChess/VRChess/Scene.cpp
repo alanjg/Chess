@@ -391,3 +391,13 @@ Scene::Scene()
 	searchBoard->SetFEN(Board::startPosition);
 	Init();
 }
+
+Scene::~Scene()
+{
+	// stop the search
+	if (gameState == ComputerMoving || gameState == ComputerToMove)
+	{
+		search->SetTimeExceeded();
+		t.join();
+	}
+}

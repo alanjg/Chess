@@ -39,6 +39,7 @@ private:
 	void Init();
 public:	
 	Scene();
+	~Scene();
 
 	void Render(XMMATRIX * proj, XMMATRIX * view);
 	

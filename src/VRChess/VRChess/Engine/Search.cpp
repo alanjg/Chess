@@ -880,4 +880,10 @@ namespace SjelkjdChessEngine
 			return val;
 		}
 	}
+
+	void Search::SetTimeExceeded()
+	{
+		timeExceeded = true;
+	}
+
 }
