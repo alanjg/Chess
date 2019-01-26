@@ -198,20 +198,15 @@ static bool MainLoop(bool retryCreate)
 				XMMATRIX viewInvTranspose = XMMatrixTranspose(viewInv);				
 
 				XMVECTOR dir = XMVectorSet(0, 0, -1, 0);
-				XMVECTOR pointerDir = XMVectorSet(0, 0, -1, 0);
+				
 				XMVECTOR controllerPos = XMVectorSet(controller->GetModel()->Pos.x, controller->GetModel()->Pos.y, controller->GetModel()->Pos.z, 1.0);
 				XMFLOAT4 controllerRot = controller->GetModel()->Rot;
 				XMVECTOR quat = XMVectorSet(controllerRot.x, controllerRot.y, controllerRot.z, controllerRot.w);
 				XMVECTOR pointing = XMVector3Rotate(dir, quat);
-				XMVECTOR cameraPointingDir = XMVector3Rotate(XMVector3Rotate(dir, cameraRot), quat);
-				//XMVECTOR cameraDir = XMVector3TransformCoord(pointing, XMMatrixRotationQuaternion(cameraRot));
 				XMVector3Normalize(pointing);
-				XMVector3Normalize(cameraPointingDir);
 				XMFLOAT3 pointfx;
 				XMStoreFloat3(&pointfx, pointing);
 
-				//trying to get controller pointing direction in world space for lighting test
-				XMFLOAT3 camerapointfx = XMFLOAT3(cameraPointingDir.m128_f32);
 				float tmin;
 				if (eye == 0)
 				{
@@ -233,9 +228,9 @@ static bool MainLoop(bool retryCreate)
 
 				PixelShaderLightData data;
 				XMStoreFloat3(&data.eyePos, CombinedPos);
-				data.lightDir.x = pointfx.x;
-				data.lightDir.y = pointfx.y;
-				data.lightDir.z = pointfx.z;
+				data.lightDir.x = .707f;
+				data.lightDir.y = -.707f;
+				data.lightDir.z = 0;
 				data.ambientLight = XMFLOAT4A(0.6f, 0.6f, 0.6f, 1.0f);
 				data.diffuseLight = XMFLOAT4A(0.6f, 0.6f, 0.6f, 1.0f);
 				data.specularLight = XMFLOAT4A(0.4f, 0.4f, 0.4f, 1.0f);

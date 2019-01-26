@@ -41,14 +41,6 @@ void Scene::Render(XMMATRIX * proj, XMMATRIX * view)
 	}
 }
 
-void Scene::RenderInstanced(XMMATRIX * projViews)
-{
-	for (auto i = Models.begin(); i != Models.end(); i++)
-	{
-		(*i)->RenderInstanced(projViews);
-	}
-}
-
 void Scene::Init()
 {
 	/*
@@ -329,9 +321,10 @@ bool Scene::GetBoardSquare(XMFLOAT3& origin, XMFLOAT3& direction, XMMATRIX& view
 	if (board->Pick(transformedRayOrigin, transformedRayDir, tmin))
 	{
 		XMVECTOR intersection = transformedRayOrigin + transformedRayDir * tmin;
-		float x = intersection.m128_f32[0];
-		float y = intersection.m128_f32[1];
-		float z = intersection.m128_f32[2];
+		XMFLOAT3 intersectionxyz;
+		XMStoreFloat3(&intersectionxyz, intersection);
+		float x = intersectionxyz.x;
+		float z = intersectionxyz.z;
 		float u = x / 8.0f;
 		float v = z / 8.0f;
 		row = int(x);

@@ -48,17 +48,6 @@ Material::Material(Texture * t, MaterialData* materialData)
 		blobData->GetBufferPointer(), blobData->GetBufferSize(), &InputLayout);
 	blobData->Release();
 
-	// Create vertex shader for instancing
-	result = D3DCompileFromFile(L"InstancedPieceVertexShader.hlsl", NULL, NULL, "main", "vs_5_0", 0, 0, &blobData, &errorBlob);
-	if (FAILED(result))
-	{
-		MessageBoxA(nullptr, (char *)errorBlob->GetBufferPointer(), "Error compiling vertex shader", MB_OK);
-		exit(-1);
-	}
-
-	DIRECTX.Device->CreateVertexShader(blobData->GetBufferPointer(), blobData->GetBufferSize(), nullptr, &VertexShaderInstanced);
-	blobData->Release();
-
 	// Create pixel shader
 	result = D3DCompileFromFile(L"PiecePixelShader.hlsl", NULL, NULL, "main", "ps_5_0", 0, 0, &blobData, &errorBlob);
 	if (FAILED(result))
@@ -119,7 +108,6 @@ Material::Material(Texture * t, MaterialData* materialData)
 Material::~Material()
 {
 	Release(VertexShader);
-	Release(VertexShaderInstanced);
 	Release(PixelShader);
 	delete Tex; 
 	Tex = nullptr;

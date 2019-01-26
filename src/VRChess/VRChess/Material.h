@@ -13,7 +13,7 @@ struct MaterialData
 
 struct Material
 {
-	ID3D11VertexShader      * VertexShader, *VertexShaderInstanced;
+	ID3D11VertexShader      * VertexShader;
 	ID3D11PixelShader       * PixelShader;
 	Texture                 * Tex;
 	ID3D11InputLayout       * InputLayout;

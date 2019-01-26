@@ -18,7 +18,6 @@ private:
 public:
 	Model(TriangleSet * t, XMFLOAT3 argPos, XMFLOAT4 argRot, shared_ptr<Material> argFill);
 	void Render(XMMATRIX * proj, XMMATRIX* view);
-	void RenderInstanced(XMMATRIX *viewProjMats);
 	bool Pick(XMVECTOR rayOrigin, XMVECTOR rayDirection, float& tMin);
 
 	XMFLOAT3 Pos;

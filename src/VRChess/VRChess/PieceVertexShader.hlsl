@@ -16,6 +16,6 @@ void main(in  float4 Position  : POSITION,
 	oPosition = mul(ProjView, Position); 
 	oTexCoord = TexCoord; 
 	oColor = MasterCol * Color;
-	oPositionW = mul(World, Position);
-	oNormal = mul(WorldInvTranspose, Normal);
+	oPositionW = mul(World, Position).xyz;
+	oNormal = mul(WorldInvTranspose, Normal).xyz;
 }

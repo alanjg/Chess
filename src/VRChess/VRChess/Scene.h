@@ -41,8 +41,6 @@ public:
 	Scene();
 
 	void Render(XMMATRIX * proj, XMMATRIX * view);
-
-	void RenderInstanced(XMMATRIX * projViews);
 	
 	Model* Pick(XMFLOAT3& origin, XMFLOAT3& direction, XMMATRIX& viewMatrix, float& tmin);
 	

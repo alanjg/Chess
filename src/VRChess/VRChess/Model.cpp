@@ -68,46 +68,6 @@ void Model::Render(XMMATRIX * proj, XMMATRIX* view)
 	DIRECTX.Context->DrawIndexed((UINT)m_numIndices, 0, 0);
 }
 
-// render using stereo instancing
-void Model::RenderInstanced(XMMATRIX *viewProjMats)
-{
-	XMMATRIX modelMat = XMMatrixMultiply(XMMatrixRotationQuaternion(XMLoadFloat4(&Rot)), XMMatrixTranslationFromVector(XMLoadFloat3(&Pos)));
-	XMMATRIX modelViewProjMatL = XMMatrixMultiply(modelMat, viewProjMats[0]);
-	XMMATRIX modelViewProjMatR = XMMatrixMultiply(modelMat, viewProjMats[1]);
-	float col[] = { 1, 1, 1, 1 };
-	
-	memcpy(DIRECTX.UniformData + 0, &modelViewProjMatL, 64);
-	memcpy(DIRECTX.UniformData + 64, &modelViewProjMatR, 64);
-	memcpy(DIRECTX.UniformData + 128, &col, 16); // MasterCol
-	D3D11_MAPPED_SUBRESOURCE map;
-	DIRECTX.Context->Map(DIRECTX.UniformBufferGen->GetBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &map);
-	memcpy(map.pData, &DIRECTX.UniformData, DIRECTX.UNIFORM_DATA_SIZE);
-	DIRECTX.Context->Unmap(DIRECTX.UniformBufferGen->GetBuffer(), 0);
-	DIRECTX.Context->IASetInputLayout(m_fill->InputLayout);
-	DIRECTX.Context->IASetIndexBuffer(m_indexBuffer->GetBuffer(), DXGI_FORMAT_R32_UINT, 0);
-	UINT offset = 0;
-
-	ID3D11Buffer* vertexBuffer = m_vertexBuffer->GetBuffer();
-	ID3D11Buffer* constantBuffer = m_fill->materialBuffer->GetBuffer();
-	ID3D11Buffer* globalConstantBuffer = DIRECTX.PixelShaderConstantBuffer->GetBuffer();
-	DIRECTX.Context->PSSetConstantBuffers(0, 1, &globalConstantBuffer);
-	DIRECTX.Context->PSSetConstantBuffers(1, 1, &constantBuffer);
-
-	DIRECTX.Context->IASetVertexBuffers(0, 1, &vertexBuffer, &m_fill->VertexSize, &offset);
-	DIRECTX.Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DIRECTX.Context->VSSetShader(m_fill->VertexShaderInstanced, nullptr, 0);
-	DIRECTX.Context->PSSetShader(m_fill->PixelShader, nullptr, 0);
-	DIRECTX.Context->PSSetSamplers(0, 1, &m_fill->SamplerState);
-	DIRECTX.Context->RSSetState(m_fill->Rasterizer);
-	DIRECTX.Context->OMSetDepthStencilState(m_fill->DepthState, 0);
-	DIRECTX.Context->OMSetBlendState(m_fill->BlendState, nullptr, 0xffffffff);
-	ID3D11ShaderResourceView* shaderResources = m_fill->Tex->GetShaderResourceView();
-	DIRECTX.Context->PSSetShaderResources(0, 1, &shaderResources);
-
-	// draw 2 instances
-	DIRECTX.Context->DrawIndexedInstanced((UINT)m_numIndices, 2, 0, 0, 0);
-}
-
 bool Model::Pick(XMVECTOR rayOrigin, XMVECTOR rayDirection, float& tMin)
 {
 	// Assume we have not picked anything yet, so init to -1.
