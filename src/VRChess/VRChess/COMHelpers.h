@@ -14,15 +14,3 @@ template<typename T> void Release(T *&obj)
 	obj->Release();
 	obj = nullptr;
 }
-
-struct Utility
-{
-	void Output(const char * fnt, ...)
-	{
-		static char string_text[1000];
-		va_list args; va_start(args, fnt);
-		vsprintf_s(string_text, fnt, args);
-		va_end(args);
-		OutputDebugStringA(string_text);
-	}
-} static Util;

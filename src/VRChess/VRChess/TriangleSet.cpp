@@ -61,6 +61,8 @@ void TriangleSet::calcNormals()
 		normals[ind[i + 1]].push_back(normf);
 		normals[ind[i + 2]].push_back(normf);
 	}
+
+	// Weight normals across all contributing faces.
 	for (unsigned int i = 0; i < normals.size();i++)
 	{
 		XMVECTOR acc = XMVectorSet(0, 0, 0, 0);

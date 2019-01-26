@@ -6,8 +6,7 @@
 #include "Camera.h"
 
 Controller::Controller()
-{
-	
+{	
 	TriangleSet* cube = new TriangleSet();
 	cube->AddSolidColorBox(0.05f, -0.05f, 0.05f, -0.05f, 0.05f, -0.05f, 0xff404040);
 
@@ -35,23 +34,9 @@ void Controller::UpdatePosition(ovrTrackingState& trackingState, Camera& mainCam
 
 	XMStoreFloat3(&model->Pos, translatedHandPos);
 	XMStoreFloat4(&model->Rot, modelRot);
-	/*
-	//Write position and orientation into controller model.
-	model->Pos = XMFLOAT3(XMVectorGetX(mainCam->Pos) + trackingState.HandPoses[ovrHand_Right].ThePose.Position.x,
-		XMVectorGetY(mainCam->Pos) + trackingState.HandPoses[ovrHand_Right].ThePose.Position.y,
-		XMVectorGetZ(mainCam->Pos) + trackingState.HandPoses[ovrHand_Right].ThePose.Position.z);
-	*/
-
+	
 	XMStoreFloat3(&pointingModel->Pos, translatedHandPos);
 	XMStoreFloat4(&pointingModel->Rot, modelRot);
-
-	/*
-	//Write position and orientation into controller model.
-	pointingModel->Pos = XMFLOAT3(XMVectorGetX(mainCam->Pos) + trackingState.HandPoses[ovrHand_Right].ThePose.Position.x,
-		XMVectorGetY(mainCam->Pos) + trackingState.HandPoses[ovrHand_Right].ThePose.Position.y,
-		XMVectorGetZ(mainCam->Pos) + trackingState.HandPoses[ovrHand_Right].ThePose.Position.z);
-	XMStoreFloat4(&pointingModel->Rot, handRot);
-	*/
 }
 
 Model* Controller::GetModel()

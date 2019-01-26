@@ -17,7 +17,6 @@ Material::Material(Texture * t, MaterialData* materialData)
 	: Tex(t)
 {
 	uint32_t flags = MAT_WRAP | MAT_TRANS;
-	//uint32_t flags = MAT_WRAP | MAT_TRANS | MAT_WIRE;
 	int numVertexDesc = 4;
 	
 	VertexSize = 36; 

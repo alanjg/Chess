@@ -43,27 +43,6 @@ void Scene::Render(XMMATRIX * proj, XMMATRIX * view)
 
 void Scene::Init()
 {
-	/*
-	TriangleSet* cube = new TriangleSet();
-	cube->AddSolidColorBox(0.5f, -0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0xff404040);
-	Models.push_back(unique_ptr<Model>(
-		new Model(cube, XMFLOAT3(0, 0, 0), XMFLOAT4(0, 0, 0, 1),
-			shared_ptr<Material>(new Material(
-				new GeneratedTexture(false, 256, 256, GeneratedTexture::AUTO_CEILING)
-			))
-		)
-	));
-
-	TriangleSet* spareCube = new TriangleSet();
-	spareCube->AddSolidColorBox(0.1f, -0.1f, 0.1f, -0.1f, +0.1f, -0.1f, 0xffff0000);
-	Models.push_back(unique_ptr<Model>(
-		new Model(spareCube, XMFLOAT3(0, -10, 0), XMFLOAT4(0, 0, 0, 1),
-			shared_ptr<Material>(new Material(
-				new GeneratedTexture(false, 256, 256, GeneratedTexture::AUTO_CEILING)
-			))
-		)
-	));
-	*/
 	TriangleSet* walls = new TriangleSet();
 	walls->AddSolidColorBox(10.1f, -0.1f, 20.0f, 10.0f, 8.0f, -20.0f, 0xff808080);  // Left Wall
 	walls->AddSolidColorBox(10.0f, -0.1f, -20.0f, -10.0f, 8.0f, -20.0f, 0xff808080);  // Front Wall
@@ -76,20 +55,6 @@ void Scene::Init()
 			))
 		)
 	));
-
-	if (false)
-	{
-		TriangleSet* partitions = new TriangleSet();
-		for (float depth = 0.0f; depth > -3.0f; depth -= 0.1f)
-			partitions->AddSolidColorBox(9.0f, 0.5f, -depth, -9.0f, 3.5f, -depth, 0x10ff80ff); // Partition
-		Models.push_back(unique_ptr<Model>(
-			new Model(partitions, XMFLOAT3(0, 0, 0), XMFLOAT4(0, 0, 0, 1),
-				shared_ptr<Material>(new Material(
-					new GeneratedTexture(false, 256, 256, GeneratedTexture::AUTO_FLOOR)
-				))
-			)
-		)); // Floors
-	}
 
 	TriangleSet* floors = new TriangleSet();
 	floors->AddSolidColorBox(10.0f, -0.1f, 20.0f, -10.0f, -0.01f, -20.1f, 0xff808080); // Main floor

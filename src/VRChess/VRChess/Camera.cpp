@@ -13,8 +13,7 @@ Camera::Camera(const XMVECTOR & pos, const XMVECTOR & rot)
 
 Camera::Camera(const XMFLOAT3& posf, const XMFLOAT4& rotf)
 	: Posf(posf), Rotf(rotf)
-{
-	
+{	
 }
 
 XMMATRIX Camera::GetViewMatrix()
