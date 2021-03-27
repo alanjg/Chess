@@ -266,12 +266,14 @@ void Scene::Update()
 
 bool Scene::GetBoardSquare(XMFLOAT3& origin, XMFLOAT3& direction, XMMATRIX& viewMatrix, int& row, int& col)
 {
+	XMVECTOR viewMatrixDeterminant = XMMatrixDeterminant(viewMatrix);
 	// Tranform ray to local space of Mesh.
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(viewMatrix), viewMatrix);
+	XMMATRIX invView = XMMatrixInverse(&viewMatrixDeterminant, viewMatrix);
 
 	XMMATRIX W = XMMatrixMultiply(XMMatrixRotationQuaternion(XMLoadFloat4(&board->Rot)), XMMatrixTranslationFromVector(XMLoadFloat3(&board->Pos)));
 
-	XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
+	XMVECTOR wMatrixDeterminant = XMMatrixDeterminant(W);
+	XMMATRIX invWorld = XMMatrixInverse(&wMatrixDeterminant, W);
 
 	//ray already in local space
 	XMMATRIX toLocal = invWorld;
@@ -329,7 +331,8 @@ bool Scene::PickModel(XMFLOAT3& origin, XMFLOAT3& direction, XMMATRIX& viewMatri
 {
 	XMMATRIX W = XMMatrixMultiply(XMMatrixRotationQuaternion(XMLoadFloat4(&model.Rot)), XMMatrixTranslationFromVector(XMLoadFloat3(&model.Pos)));
 
-	XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
+	XMVECTOR wDeterminant = XMMatrixDeterminant(W);
+	XMMATRIX invWorld = XMMatrixInverse(&wDeterminant, W);
 
 	//ray already in local space
 	XMVECTOR transformedRayOrigin = XMVector3TransformCoord(XMLoadFloat3(&origin), invWorld);

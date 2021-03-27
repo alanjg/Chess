@@ -144,26 +144,29 @@ static bool MainLoop(bool retryCreate)
 			ovrTrackingState trackingState = ovr_GetTrackingState(vrChess.session, ftiming, ovrTrue);
 			ovr_CalcEyePoses(trackingState.HeadPose.ThePose, HmdToEyePose, EyeRenderPose);
 
+			bool hitTrigger = false;
 			ovrInputState inputState;
 			if (ovr_GetInputState(vrChess.session, ovrControllerType_RTouch, &inputState) != ovrSuccess)
 			{
-				break;
-			}
-			bool hitTrigger = false;
-
-			if (!triggerState)
-			{
-				if (inputState.IndexTrigger[ovrHand_Right] > 0.8f)
-				{
-					hitTrigger = true;
-					triggerState = true;
-				}
+				//break;
 			}
 			else
 			{
-				if (inputState.IndexTrigger[ovrHand_Right] < 0.2f)
+
+				if (!triggerState)
 				{
-					triggerState = false;
+					if (inputState.IndexTrigger[ovrHand_Right] > 0.8f)
+					{
+						hitTrigger = true;
+						triggerState = true;
+					}
+				}
+				else
+				{
+					if (inputState.IndexTrigger[ovrHand_Right] < 0.2f)
+					{
+						triggerState = false;
+					}
 				}
 			}
 			

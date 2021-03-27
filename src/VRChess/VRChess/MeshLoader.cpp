@@ -25,12 +25,16 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 	path = path.substr(0, index + 1);
 	std::wstring meshFile = path + std::wstring(file.begin(), file.end());
 	std::ifstream in(meshFile);
+	if (!in)
+	{
+		MessageBox(NULL, L"no file", meshFile.c_str(), MB_OK);
+	}
 	std::string word;
 	in >> word;
 	MaterialData materialData;
 	if (word != "Material")
 	{
-		return false;
+		return nullptr;
 	}
 	in >> word;
 	Texture* texture;
@@ -60,7 +64,7 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 		ImageTexture* it = new ImageTexture();
 		if (!it->Init(imageFile))
 		{
-			return false;
+			return nullptr;
 		}
 		texture = it;
 		in >> word;
@@ -72,7 +76,7 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 
 	if (word != "Positions")
 	{
-		return false;
+		return nullptr;
 	}
 	int count;
 	in >> count;
@@ -88,7 +92,7 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 	in >> word;
 	if (word != "Indexes")
 	{
-		return false;
+		return nullptr;
 	}
 	std::vector<int> indexes;
 	in >> count;
@@ -101,7 +105,7 @@ Model* MeshLoader::LoadMeshFromFile(const std::string& file)
 	in >> word;
 	if (word != "TexCoords")
 	{
-		return false;
+		return nullptr;
 	}
 	in >> count;
 	std::vector<float> tu, tv;

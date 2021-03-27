@@ -32,11 +32,11 @@ Material::Material(Texture * t, MaterialData* materialData)
 	ID3DBlob * blobData;
 	ID3DBlob * errorBlob = nullptr;
 
-	
 	HRESULT result = D3DCompileFromFile(L"PieceVertexShader.hlsl", NULL, NULL, "main", "vs_5_0", 0, 0, &blobData, &errorBlob);
 	if (FAILED(result))
 	{
-		MessageBoxA(nullptr, (char *)errorBlob->GetBufferPointer(), "Error compiling vertex shader", MB_OK);
+		const char* errorMessage = errorBlob != nullptr ? (char*)errorBlob->GetBufferPointer() : "No error message available";
+		MessageBoxA(nullptr, errorMessage, "Error compiling vertex shader", MB_OK);
 		exit(-1);
 	}
 
