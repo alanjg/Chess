@@ -237,13 +237,7 @@
     <None Include="..\Content\WRook.txt">
       <Filter>Models</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="PieceVertexShader.hlsl">
-      <Filter>Resource Files</Filter>
-    </FxCompile>
-    <FxCompile Include="PiecePixelShader.hlsl">
-      <Filter>Resource Files</Filter>
-    </FxCompile>
+    <None Include="PiecePixelShader.hlsl" />
+    <None Include="PieceVertexShader.hlsl" />
   </ItemGroup>
 </Project>

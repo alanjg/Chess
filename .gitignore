@@ -8,6 +8,7 @@
 *.opendb
 # Build results
 
+.vs/
 [Dd]ebug/
 [Rr]elease/
 x64/
@@ -48,6 +49,7 @@ build/
 *.pidb
 *.log
 *.scc
+read.lock
 
 # Visual C++ cache files
 ipch/
