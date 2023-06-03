@@ -32,24 +32,24 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -95,7 +95,6 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>DEBUGPV;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader />
@@ -114,7 +113,6 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader />
@@ -190,7 +188,11 @@
     <ClCompile Include="Evaluation.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoveGenerator.cpp" />
+    <ClCompile Include="ParallelSearch.cpp" />
     <ClCompile Include="Search.cpp" />
+    <ClCompile Include="SearchNode.cpp" />
+    <ClCompile Include="SearchRoot.cpp" />
+    <ClCompile Include="SearchWorker.cpp" />
     <ClCompile Include="StaticExchangeEvaluator.cpp" />
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="Tests.cpp" />
@@ -203,7 +205,11 @@
     <ClInclude Include="Evaluation.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="MoveGenerator.h" />
+    <ClInclude Include="ParallelSearch.h" />
     <ClInclude Include="Search.h" />
+    <ClInclude Include="SearchNode.h" />
+    <ClInclude Include="SearchRoot.h" />
+    <ClInclude Include="SearchWorker.h" />
     <ClInclude Include="StaticExchangeEvaluator.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="Tests.h" />
